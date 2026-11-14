@@ -269,28 +269,32 @@
 
 <script>
     // --- ДАННЫЕ ---
+        // --- ДАННЫЕ ---
     const users = {
         'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь', followers: 1240, following: 312 },
         'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор', followers: 5400, following: 12 }
     };
 
-    // База авторов
     const authors = {
         'author1': { name: 'Иван Сидоров', status: 'Senior Android Developer', followers: 850 },
         'author2': { name: 'Мария Петрова', status: 'UI/UX Дизайнер', followers: 1200 },
         'author3': { name: 'Елена Смирнова', status: 'Fullstack разработчик', followers: 450 }
     };
 
-    // База проектов (разные названия)
+    // Сделал больше проектов для теста
     const projectsData = [
-        { id: 1, title: "Приложение Погоды", tech: "Kotlin, Compose, Room", cat: "Android", desc: "Показывает текущую погоду и прогноз на 7 дней. Включает геолокацию и красивые анимации.", authorKey: 'author1' },
-        { id: 2, title: "Интерфейс банка", tech: "Figma", cat: "Дизайн", desc: "Дизайн мобильного банка. Разработаны экраны входа, перевода средств и истории операций.", authorKey: 'author2' },
-        { id: 3, title: "Список задач", tech: "Kotlin, SQLite", cat: "Android", desc: "Локальный таск-менеджер с возможностью создавать списки, ставить дедлайны и напоминания.", authorKey: 'author3' },
-        { id: 4, title: "Сайт-визитка", tech: "HTML, CSS, JS", cat: "Web", desc: "Портфолио для фотографа. Адаптивная верстка, галерея работ и форма обратной связи.", authorKey: 'author2' },
-        { id: 5, title: "Онлайн-магазин", tech: "React, Node.js", cat: "Web", desc: "Полноценный e-commerce проект с корзиной, фильтрами и личным кабинетом.", authorKey: 'author3' },
-        { id: 6, title: "Трекер привычек", tech: "Compose, DataStore", cat: "Android", desc: "Приложение для отслеживания полезных привычек с красивыми графиками прогресса.", authorKey: 'author1' },
-        { id: 7, title: "Дизайн лендинга", tech: "Figma, Photoshop", cat: "Дизайн", desc: "Создание продающего лендинга для IT-курсов. Прототипирование и UI-кит.", authorKey: 'author2' },
-        { id: 8, title: "Новостной агрегатор", tech: "Kotlin, Retrofit", cat: "Android", desc: "Приложение собирает новости из разных источников и кэширует их для офлайн-чтения.", authorKey: 'author1' }
+        { id: 1, title: "Приложение Погоды", tech: "Kotlin, Compose, Room", cat: "Android", desc: "Показывает текущую погоду и прогноз на 7 дней.", authorKey: 'author1' },
+        { id: 2, title: "Интерфейс банка", tech: "Figma", cat: "Дизайн", desc: "Дизайн мобильного банка.", authorKey: 'author2' },
+        { id: 3, title: "Список задач", tech: "Kotlin, SQLite", cat: "Android", desc: "Локальный таск-менеджер.", authorKey: 'author3' },
+        { id: 4, title: "Сайт-визитка", tech: "HTML, CSS, JS", cat: "Web", desc: "Портфолио для фотографа.", authorKey: 'author2' },
+        { id: 5, title: "Онлайн-магазин", tech: "React, Node.js", cat: "Web", desc: "E-commerce проект с корзиной.", authorKey: 'author3' },
+        { id: 6, title: "Трекер привычек", tech: "Compose, DataStore", cat: "Android", desc: "Трекер полезных привычек.", authorKey: 'author1' },
+        { id: 7, title: "Дизайн лендинга", tech: "Figma, Photoshop", cat: "Дизайн", desc: "Лендинг для IT-курсов.", authorKey: 'author2' },
+        { id: 8, title: "Новостной агрегатор", tech: "Kotlin, Retrofit", cat: "Android", desc: "Сбор новостей из разных источников.", authorKey: 'author1' },
+        { id: 9, title: "Мессенджер", tech: "Firebase, Kotlin", cat: "Android", desc: "Простой чат с авторизацией.", authorKey: 'author3' },
+        { id: 10, title: "Корпоративный сайт", tech: "Vue.js", cat: "Web", desc: "Сайт для крупной компании.", authorKey: 'author2' },
+        { id: 11, title: "Мобильная игра", tech: "Unity, C#", cat: "Дизайн", desc: "2D-платформер.", authorKey: 'author1' },
+        { id: 12, title: "Сервис доставки", tech: "React Native", cat: "Android", desc: "Приложение для заказа еды.", authorKey: 'author3' },
     ];
 
     let currentUser = null;
@@ -299,12 +303,8 @@
     let notes = [];
     let auditLog = [];
     let editingNoteIndex = -1;
-    
-    // ID открытого проекта и автора
     let currentProjectId = null;
     let currentAuthorKey = null;
-
-    // Хранилище подписок
     let subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '{}');
 
     // --- DOM ---
@@ -360,7 +360,6 @@
         btn.onclick = () => navigateTo(btn.dataset.target);
     });
 
-    // --- МОЙ ПРОФИЛЬ ---
     function updateMyProfileUI() {
         const user = users[currentUser];
         document.getElementById('my-profile-name').textContent = user.name;
@@ -379,7 +378,6 @@
         }
     }
 
-    // --- МОИ ПОДПИСКИ ---
     function renderSubscriptions() {
         subsList.innerHTML = '';
         const mySubs = Object.keys(subscriptions).filter(key => key.startsWith(`${currentUser}_`) && subscriptions[key]);
@@ -407,7 +405,6 @@
         });
     }
 
-    // --- ЛЕНТА ---
     function renderFeed() {
         feedList.innerHTML = '';
         const filtered = projectsData.filter(p => currentCategory === "Все" || p.cat === currentCategory);
@@ -416,7 +413,6 @@
         toDisplay.forEach(p => {
             const div = document.createElement('div');
             div.className = 'project-card';
-            // Открываем ДЕТАЛИ при клике на карточку
             div.onclick = () => openProjectDetail(p.id);
             div.innerHTML = `
                 <div class="project-header">
@@ -431,12 +427,19 @@
             feedList.appendChild(div);
         });
 
-        btnLoadMore.style.display = (displayedProjectsCount >= filtered.length) ? 'none' : 'block';
+        // Логика скрытия/показа кнопки
+        if (displayedProjectsCount >= filtered.length) {
+            btnLoadMore.style.display = 'none';
+        } else {
+            btnLoadMore.style.display = 'block';
+        }
     }
 
     btnLoadMore.onclick = () => {
         displayedProjectsCount += 4;
         renderFeed();
+        // Прокрутка вниз к новым элементам
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     };
 
     document.querySelectorAll('.filter-chip').forEach(chip => {
@@ -449,7 +452,6 @@
         };
     });
 
-    // --- ДЕТАЛИ ПРОЕКТА ---
     function openProjectDetail(id) {
         const p = projectsData.find(proj => proj.id === id);
         if (!p) return;
@@ -460,14 +462,11 @@
         document.getElementById('detail-tech').textContent = p.tech;
         document.getElementById('detail-desc').textContent = p.desc;
         
-        // Кнопка перехода к автору
         document.getElementById('btn-go-to-author').onclick = () => openAuthorProfile(p.authorKey);
-        
         navigateTo('page-project-detail');
     }
     document.getElementById('btn-back-from-project').onclick = () => navigateTo('page-feed');
 
-    // --- ПРОФИЛЬ АВТОРА ---
     window.openAuthorProfile = (authorKey) => {
         currentAuthorKey = authorKey;
         const author = authors[authorKey];
@@ -514,7 +513,7 @@
         
         localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
         updateFollowButton();
-        renderSubscriptions(); // Обновляем список на главном профиле
+        renderSubscriptions();
     };
 
     document.getElementById('btn-back-from-author').onclick = () => {
@@ -525,7 +524,6 @@
         }
     };
 
-    // --- РЕДАКТИРОВАНИЕ ПРОФИЛЯ ---
     document.getElementById('btn-edit-profile').onclick = () => {
         document.getElementById('edit-name').value = users[currentUser].name;
         document.getElementById('edit-status').value = users[currentUser].status;
@@ -551,7 +549,6 @@
         document.getElementById('login-password').value = '';
     };
 
-    // --- ЗАМЕТКИ ---
     function loadNotes() {
         const stored = localStorage.getItem(`notes_${currentUser}`);
         notes = stored ? JSON.parse(stored) : [];
@@ -654,7 +651,6 @@
         }
     };
 
-    // --- НАСТРОЙКИ ---
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.onchange = () => {
         document.documentElement.setAttribute('data-theme', themeToggle.checked ? 'dark' : 'light');
