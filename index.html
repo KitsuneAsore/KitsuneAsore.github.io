@@ -28,7 +28,7 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; padding-bottom: 80px; /* Место для нижней панели */ }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; padding-bottom: 80px; }
         .hidden { display: none !important; }
 
         /* Нижняя панель навигации */
@@ -85,7 +85,7 @@
 <!-- ЭКРАН ВХОДА -->
 <div id="screen-login" class="auth-screen">
     <div class="card" style="width: 100%; max-width: 400px;">
-        <h2 class="text-center" style="margin-bottom: 20px;">Вход в Портфолио</h2>
+        <h2 style="margin-bottom: 20px; text-align: center;">Вход в Портфолио</h2>
         <div class="input-group">
             <input type="text" id="login-username" placeholder="Логин (admin или user)" autocomplete="off">
         </div>
@@ -97,12 +97,12 @@
     </div>
 </div>
 
-<!-- ГЛАВНЫЙ ЭКРАН ПРИЛОЖЕНИЯ (С НАВИГАЦИЕЙ) -->
+<!-- ГЛАВНЫЙ ЭКРАН ПРИЛОЖЕНИЯ -->
 <div id="screen-app" class="hidden">
     
     <div class="container">
 
-        <!-- ЭКРАН 1: ПРОФИЛЬ -->
+        <!-- 1. ПРОФИЛЬ -->
         <div id="page-profile" class="page-content hidden">
             <div class="header">
                 <div style="width: 64px; height: 64px; background: white; border-radius: 50%; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: var(--primary);" id="profile-avatar">ДГ</div>
@@ -130,7 +130,7 @@
             </div>
         </div>
 
-        <!-- ЭКРАН 2: РЕДАКТИРОВАНИЕ ПРОФИЛЯ -->
+        <!-- 2. РЕДАКТИРОВАНИЕ ПРОФИЛЯ -->
         <div id="page-edit-profile" class="page-content hidden">
             <div class="card">
                 <h2 style="margin-bottom: 20px;">Редактирование</h2>
@@ -147,7 +147,7 @@
             </div>
         </div>
 
-        <!-- ЭКРАН 3: ЛЕНТА -->
+        <!-- 3. ЛЕНТА -->
         <div id="page-feed" class="page-content">
             <h2 style="margin-bottom: 20px;">Лента сообщества</h2>
             <div class="filter-row" id="category-filters">
@@ -159,7 +159,7 @@
             <div id="feed-list"></div>
         </div>
 
-        <!-- ЭКРАН 4: ЗАМЕТКИ -->
+        <!-- 4. ЗАМЕТКИ -->
         <div id="page-notes" class="page-content hidden">
             <h2 style="margin-bottom: 20px;">Мои черновики</h2>
             <div class="card">
@@ -172,7 +172,7 @@
             <div id="notes-list"></div>
         </div>
 
-        <!-- ЭКРАН 5: НАСТРОЙКИ -->
+        <!-- 5. НАСТРОЙКИ -->
         <div id="page-settings" class="page-content hidden">
             <h2 style="margin-bottom: 20px;">Настройки</h2>
             <div class="card">
@@ -181,13 +181,9 @@
                     <input type="checkbox" id="theme-toggle" style="width: 24px; height: 24px; cursor: pointer;">
                 </div>
             </div>
-            <div class="card" style="text-align: center; color: var(--text-muted);">
-                <p>Приложение Портфолио</p>
-                <p>Версия 1.0</p>
-            </div>
         </div>
 
-        <!-- ЭКРАН 6: АДМИН -->
+        <!-- 6. АДМИН -->
         <div id="page-admin" class="page-content hidden">
             <h2 style="margin-bottom: 20px;">Журнал аудита</h2>
             <div class="card">
@@ -210,7 +206,6 @@
 </div>
 
 <script>
-    // --- ДАННЫЕ ---
     const users = {
         'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь', followers: 1240 },
         'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор', followers: 5400 }
@@ -229,15 +224,8 @@
     let auditLog = [];
     let isSubscribed = false;
 
-    // --- DOM ---
     const screenLogin = document.getElementById('screen-login');
     const screenApp = document.getElementById('screen-app');
-    const loginError = document.getElementById('login-error');
-    const feedList = document.getElementById('feed-list');
-    const notesList = document.getElementById('notes-list');
-    const auditLogEl = document.getElementById('audit-log');
-
-    // --- ЛОГИКА ---
 
     function logAudit(action, result = "ALLOWED", details = "") {
         const time = new Date().toLocaleString();
@@ -245,14 +233,13 @@
         if (auditLog.length > 50) auditLog.shift();
     }
 
-    // Вход
     document.getElementById('btn-login').onclick = () => {
         const user = document.getElementById('login-username').value.trim();
         const pass = document.getElementById('login-password').value;
         
         if (users[user] && users[user].password === pass) {
             currentUser = user;
-            loginError.classList.add('hidden');
+            document.getElementById('login-error').classList.add('hidden');
             screenLogin.classList.add('hidden');
             screenApp.classList.remove('hidden');
             logAudit("LOGIN", "ALLOWED", user);
@@ -260,15 +247,15 @@
             loadNotes();
             loadAudit();
             renderFeed();
-            navigateTo('page-feed'); // При входе открываем ленту
+            navigateTo('page-feed');
         } else {
-            loginError.textContent = "Неверный логин или пароль";
-            loginError.classList.remove('hidden');
+            const err = document.getElementById('login-error');
+            err.textContent = "Неверный логин или пароль";
+            err.classList.remove('hidden');
             logAudit("LOGIN", "DENIED", user);
         }
     };
 
-    // Навигация
     function navigateTo(pageId) {
         document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
         document.getElementById(pageId).classList.remove('hidden');
@@ -283,7 +270,6 @@
         btn.onclick = () => navigateTo(btn.dataset.target);
     });
 
-    // Обновление UI профиля
     function updateProfileUI() {
         const user = users[currentUser];
         document.getElementById('profile-name').textContent = user.name;
@@ -301,7 +287,6 @@
         }
     }
 
-    // Подписка
     document.getElementById('btn-subscribe').onclick = () => {
         const btn = document.getElementById('btn-subscribe');
         const followersEl = document.getElementById('stat-followers');
@@ -317,7 +302,6 @@
         }
     };
 
-    // Редактирование профиля
     document.getElementById('btn-edit-profile').onclick = () => {
         document.getElementById('edit-name').value = users[currentUser].name;
         document.getElementById('edit-status').value = users[currentUser].status;
@@ -334,7 +318,6 @@
 
     document.getElementById('btn-cancel-edit').onclick = () => navigateTo('page-profile');
 
-    // Выход
     document.getElementById('btn-logout').onclick = () => {
         logAudit("LOGOUT", "ALLOWED", currentUser);
         currentUser = null;
@@ -345,7 +328,6 @@
         document.getElementById('login-password').value = '';
     };
 
-    // Тёмная тема
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.onchange = () => {
         if (themeToggle.checked) {
@@ -355,15 +337,15 @@
         }
     };
 
-    // Лента
     function renderFeed() {
+        const feedList = document.getElementById('feed-list');
         feedList.innerHTML = '';
         const filtered = projects.filter(p => currentCategory === "Все" || p.cat === currentCategory);
         filtered.forEach(p => {
             const div = document.createElement('div');
             div.className = 'project-card';
             div.innerHTML = `
-                <div class="project-category">${p.cat}</div>
+                <div style="font-size: 12px; font-weight: bold; color: var(--primary);">${p.cat}</div>
                 <div class="project-title">${p.title}</div>
                 <div class="project-tech">${p.tech}</div>
                 <p>${p.desc}</p>
@@ -381,7 +363,6 @@
         };
     });
 
-    // Заметки
     function loadNotes() {
         const stored = localStorage.getItem(`notes_${currentUser}`);
         notes = stored ? JSON.parse(stored) : [];
@@ -389,6 +370,7 @@
     }
 
     function renderNotes() {
+        const notesList = document.getElementById('notes-list');
         notesList.innerHTML = '';
         if (notes.length === 0) {
             notesList.innerHTML = '<p style="color: var(--text-muted);">Заметок пока нет.</p>';
@@ -429,11 +411,11 @@
         }
     };
 
-    // Админ
     function loadAudit() {
         if (currentUser && users[currentUser].role !== 'Администратор') return;
-        auditLogEl.textContent = auditLog.join('\n') || 'Журнал пуст.';
+        document.getElementById('audit-log').textContent = auditLog.join('\n') || 'Журнал пуст.';
     }
+    
     document.getElementById('btn-refresh-audit').onclick = loadAudit;
 
     logAudit("SYSTEM_START", "ALLOWED", "Приложение запущено");
