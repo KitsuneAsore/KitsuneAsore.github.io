@@ -38,7 +38,7 @@
         .nav-btn:hover, .nav-btn.active { color: var(--primary); }
 
         /* Профиль */
-        .header-profile { background: var(--surface); border: 1px solid var(--border); padding: 32px 24px; text-align: center; border-radius: 12px; margin-bottom: 24px; position: relative; }
+        .header-profile { background: var(--surface); border: 1px solid var(--border); padding: 32px 24px; text-align: center; border-radius: 12px; margin-bottom: 24px; }
         .avatar-circle { width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 50%; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; }
         .header-profile h1 { font-size: 24px; margin-bottom: 4px; }
         .header-profile p { color: var(--text-muted); font-size: 14px; }
@@ -55,7 +55,6 @@
         .btn-primary { background: var(--primary); color: white; width: 100%; }
         .btn-primary:hover { background: var(--primary-hover); }
         .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); width: 100%; }
-        .btn-secondary:hover { background: var(--border); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); width: 100%; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 12px; font-size: 13px; width: auto; }
@@ -72,7 +71,8 @@
         .project-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .project-title { font-weight: 600; font-size: 18px; }
         .project-category { font-size: 12px; font-weight: 600; color: var(--primary); text-transform: uppercase; }
-        .project-author { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+        .project-author { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; cursor: pointer; text-decoration: underline; }
+        .project-author:hover { color: var(--primary); }
         
         /* Фильтры */
         .filter-row { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
@@ -91,6 +91,10 @@
         /* Экран входа */
         .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
         #audit-log { background: var(--bg); padding: 16px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; border: 1px solid var(--border); }
+
+        /* Список подписок */
+        .subscription-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); }
+        .subscription-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -117,7 +121,7 @@
     
     <div class="container">
 
-        <!-- 1. ПРОФИЛЬ (МОЙ) -->
+        <!-- 1. МОЙ ПРОФИЛЬ -->
         <div id="page-profile" class="page-content hidden">
             <div class="header-profile">
                 <div class="avatar-circle" id="my-profile-avatar">ДГ</div>
@@ -140,28 +144,46 @@
                 <button id="btn-edit-profile" class="btn-secondary" style="margin-bottom: 12px;">Редактировать профиль</button>
                 <button id="btn-logout" class="btn-outline">Выйти</button>
             </div>
+
+            <h3 style="margin: 24px 0 12px;">Мои подписки</h3>
+            <div class="card" id="my-subscriptions-list">
+                <!-- Сюда будут добавляться подписки -->
+            </div>
         </div>
 
-        <!-- ПРОФИЛЬ ДРУГОГО ПОЛЬЗОВАТЕЛЯ -->
-        <div id="page-other-profile" class="page-content hidden">
-            <button id="btn-back-from-profile" class="btn-outline" style="margin-bottom: 24px; width: auto;">← Назад</button>
+        <!-- ДЕТАЛИ ПРОЕКТА -->
+        <div id="page-project-detail" class="page-content hidden">
+            <button id="btn-back-from-project" class="btn-outline" style="margin-bottom: 24px; width: auto;">← Назад</button>
+            <div class="card">
+                <div class="project-category" id="detail-cat">Категория</div>
+                <h1 id="detail-title" style="margin: 8px 0;">Название</h1>
+                <div class="project-tech" id="detail-tech">Технологии</div>
+                <hr style="border: 0; border-top: 1px solid var(--border); margin: 16px 0;">
+                <p id="detail-desc" style="margin-bottom: 24px;">Полное описание проекта...</p>
+                <button id="btn-go-to-author" class="btn-primary">Перейти к автору</button>
+            </div>
+        </div>
+
+        <!-- ПРОФИЛЬ АВТОРА -->
+        <div id="page-author-profile" class="page-content hidden">
+            <button id="btn-back-from-author" class="btn-outline" style="margin-bottom: 24px; width: auto;">← Назад</button>
             <div class="header-profile">
-                <div class="avatar-circle" id="other-profile-avatar">АА</div>
-                <h1 id="other-profile-name">Имя</h1>
-                <p id="other-profile-status">Статус</p>
+                <div class="avatar-circle" id="author-avatar">АА</div>
+                <h1 id="author-name">Имя</h1>
+                <p id="author-status">Статус</p>
             </div>
             <div class="card">
                 <div class="stats-row">
                     <div class="stat-item">
-                        <div class="stat-value" id="other-stat-followers">0</div>
+                        <div class="stat-value" id="author-followers">0</div>
                         <div class="stat-label">Подписчики</div>
                     </div>
                 </div>
-                <button id="btn-follow-other" class="btn-primary">Подписаться</button>
+                <button id="btn-follow-author" class="btn-primary">Подписаться</button>
             </div>
         </div>
 
-        <!-- 2. РЕДАКТИРОВАНИЕ ПРОФИЛЯ -->
+        <!-- РЕДАКТИРОВАНИЕ ПРОФИЛЯ -->
         <div id="page-edit-profile" class="page-content hidden">
             <div class="card">
                 <h2 style="margin-bottom: 24px;">Редактирование</h2>
@@ -178,7 +200,7 @@
             </div>
         </div>
 
-        <!-- 3. ЛЕНТА -->
+        <!-- ЛЕНТА -->
         <div id="page-feed" class="page-content">
             <h2 style="margin-bottom: 24px;">Лента сообщества</h2>
             <div class="filter-row" id="category-filters">
@@ -191,7 +213,7 @@
             <button id="btn-load-more" class="btn-secondary" style="margin-top: 16px;">Загрузить ещё</button>
         </div>
 
-        <!-- 4. ЗАМЕТКИ -->
+        <!-- ЗАМЕТКИ -->
         <div id="page-notes" class="page-content hidden">
             <h2 style="margin-bottom: 24px;">Мои черновики</h2>
             <div class="card">
@@ -212,7 +234,7 @@
             <div id="notes-list"></div>
         </div>
 
-        <!-- 5. НАСТРОЙКИ -->
+        <!-- НАСТРОЙКИ -->
         <div id="page-settings" class="page-content hidden">
             <h2 style="margin-bottom: 24px;">Настройки</h2>
             <div class="card">
@@ -223,7 +245,7 @@
             </div>
         </div>
 
-        <!-- 6. АДМИН -->
+        <!-- АДМИН -->
         <div id="page-admin" class="page-content hidden">
             <h2 style="margin-bottom: 24px;">Журнал аудита</h2>
             <div class="card">
@@ -252,32 +274,24 @@
         'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор', followers: 5400, following: 12 }
     };
 
+    // База авторов
     const authors = {
         'author1': { name: 'Иван Сидоров', status: 'Senior Android Developer', followers: 850 },
-        'author2': { name: 'Мария Петрова', status: 'UI/UX Дизайнер', followers: 1200 }
+        'author2': { name: 'Мария Петрова', status: 'UI/UX Дизайнер', followers: 1200 },
+        'author3': { name: 'Елена Смирнова', status: 'Fullstack разработчик', followers: 450 }
     };
 
-    // Генерация проектов с авторами
-    const projectsData = [];
-    const categories = ["Android", "Web", "Дизайн"];
-    const baseProjects = [
-        { title: "Приложение Погоды", tech: "Kotlin, Compose, Room", desc: "Показывает погоду.", authorKey: 'author1' },
-        { title: "Интерфейс банка", tech: "Figma", desc: "Дизайн мобильного банка.", authorKey: 'author2' },
-        { title: "Список задач", tech: "Kotlin, SQLite", desc: "Локальный таск-менеджер.", authorKey: 'author1' },
-        { title: "Сайт-визитка", tech: "HTML, CSS", desc: "Портфолио для фотографа.", authorKey: 'author2' }
+    // База проектов (разные названия)
+    const projectsData = [
+        { id: 1, title: "Приложение Погоды", tech: "Kotlin, Compose, Room", cat: "Android", desc: "Показывает текущую погоду и прогноз на 7 дней. Включает геолокацию и красивые анимации.", authorKey: 'author1' },
+        { id: 2, title: "Интерфейс банка", tech: "Figma", cat: "Дизайн", desc: "Дизайн мобильного банка. Разработаны экраны входа, перевода средств и истории операций.", authorKey: 'author2' },
+        { id: 3, title: "Список задач", tech: "Kotlin, SQLite", cat: "Android", desc: "Локальный таск-менеджер с возможностью создавать списки, ставить дедлайны и напоминания.", authorKey: 'author3' },
+        { id: 4, title: "Сайт-визитка", tech: "HTML, CSS, JS", cat: "Web", desc: "Портфолио для фотографа. Адаптивная верстка, галерея работ и форма обратной связи.", authorKey: 'author2' },
+        { id: 5, title: "Онлайн-магазин", tech: "React, Node.js", cat: "Web", desc: "Полноценный e-commerce проект с корзиной, фильтрами и личным кабинетом.", authorKey: 'author3' },
+        { id: 6, title: "Трекер привычек", tech: "Compose, DataStore", cat: "Android", desc: "Приложение для отслеживания полезных привычек с красивыми графиками прогресса.", authorKey: 'author1' },
+        { id: 7, title: "Дизайн лендинга", tech: "Figma, Photoshop", cat: "Дизайн", desc: "Создание продающего лендинга для IT-курсов. Прототипирование и UI-кит.", authorKey: 'author2' },
+        { id: 8, title: "Новостной агрегатор", tech: "Kotlin, Retrofit", cat: "Android", desc: "Приложение собирает новости из разных источников и кэширует их для офлайн-чтения.", authorKey: 'author1' }
     ];
-
-    for (let i = 0; i < 20; i++) {
-        const base = baseProjects[i % 4];
-        projectsData.push({
-            id: i,
-            title: base.title + (i > 3 ? ` #${i}` : ""),
-            tech: base.tech,
-            cat: categories[i % 3],
-            desc: base.desc,
-            authorKey: base.authorKey
-        });
-    }
 
     let currentUser = null;
     let currentCategory = "Все";
@@ -285,9 +299,12 @@
     let notes = [];
     let auditLog = [];
     let editingNoteIndex = -1;
-    let currentAuthorKey = null;
     
-    // Хранилище подписок (в реальности это было бы на сервере)
+    // ID открытого проекта и автора
+    let currentProjectId = null;
+    let currentAuthorKey = null;
+
+    // Хранилище подписок
     let subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '{}');
 
     // --- DOM ---
@@ -296,6 +313,7 @@
     const feedList = document.getElementById('feed-list');
     const btnLoadMore = document.getElementById('btn-load-more');
     const notesList = document.getElementById('notes-list');
+    const subsList = document.getElementById('my-subscriptions-list');
 
     // --- ЛОГИКА ---
     function logAudit(action, result = "ALLOWED", details = "") {
@@ -304,7 +322,6 @@
         if (auditLog.length > 50) auditLog.shift();
     }
 
-    // Вход
     document.getElementById('btn-login').onclick = () => {
         const user = document.getElementById('login-username').value.trim();
         const pass = document.getElementById('login-password').value;
@@ -319,6 +336,7 @@
             loadNotes();
             loadAudit();
             renderFeed();
+            renderSubscriptions();
             navigateTo('page-feed');
         } else {
             const err = document.getElementById('login-error');
@@ -328,7 +346,6 @@
         }
     };
 
-    // Навигация
     function navigateTo(pageId) {
         document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
         document.getElementById(pageId).classList.remove('hidden');
@@ -343,7 +360,7 @@
         btn.onclick = () => navigateTo(btn.dataset.target);
     });
 
-    // --- ПРОФИЛЬ ---
+    // --- МОЙ ПРОФИЛЬ ---
     function updateMyProfileUI() {
         const user = users[currentUser];
         document.getElementById('my-profile-name').textContent = user.name;
@@ -362,6 +379,153 @@
         }
     }
 
+    // --- МОИ ПОДПИСКИ ---
+    function renderSubscriptions() {
+        subsList.innerHTML = '';
+        const mySubs = Object.keys(subscriptions).filter(key => key.startsWith(`${currentUser}_`) && subscriptions[key]);
+
+        if (mySubs.length === 0) {
+            subsList.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Вы пока ни на кого не подписаны.</p>';
+            return;
+        }
+
+        mySubs.forEach(key => {
+            const authorKey = key.split('_')[1];
+            const author = authors[authorKey];
+            if (!author) return;
+
+            const div = document.createElement('div');
+            div.className = 'subscription-item';
+            div.innerHTML = `
+                <div>
+                    <div style="font-weight: 600;">${author.name}</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">${author.status}</div>
+                </div>
+                <button class="btn-outline btn-sm" onclick="openAuthorProfile('${authorKey}')">Профиль</button>
+            `;
+            subsList.appendChild(div);
+        });
+    }
+
+    // --- ЛЕНТА ---
+    function renderFeed() {
+        feedList.innerHTML = '';
+        const filtered = projectsData.filter(p => currentCategory === "Все" || p.cat === currentCategory);
+        const toDisplay = filtered.slice(0, displayedProjectsCount);
+
+        toDisplay.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'project-card';
+            // Открываем ДЕТАЛИ при клике на карточку
+            div.onclick = () => openProjectDetail(p.id);
+            div.innerHTML = `
+                <div class="project-header">
+                    <div class="project-title">${p.title}</div>
+                    <div class="project-category">${p.cat}</div>
+                </div>
+                <div class="project-author" onclick="event.stopPropagation(); openAuthorProfile('${p.authorKey}')">
+                    Автор: ${authors[p.authorKey].name}
+                </div>
+                <div class="project-tech">${p.tech}</div>
+            `;
+            feedList.appendChild(div);
+        });
+
+        btnLoadMore.style.display = (displayedProjectsCount >= filtered.length) ? 'none' : 'block';
+    }
+
+    btnLoadMore.onclick = () => {
+        displayedProjectsCount += 4;
+        renderFeed();
+    };
+
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.onclick = () => {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentCategory = chip.dataset.cat;
+            displayedProjectsCount = 4;
+            renderFeed();
+        };
+    });
+
+    // --- ДЕТАЛИ ПРОЕКТА ---
+    function openProjectDetail(id) {
+        const p = projectsData.find(proj => proj.id === id);
+        if (!p) return;
+        
+        currentProjectId = id;
+        document.getElementById('detail-cat').textContent = p.cat;
+        document.getElementById('detail-title').textContent = p.title;
+        document.getElementById('detail-tech').textContent = p.tech;
+        document.getElementById('detail-desc').textContent = p.desc;
+        
+        // Кнопка перехода к автору
+        document.getElementById('btn-go-to-author').onclick = () => openAuthorProfile(p.authorKey);
+        
+        navigateTo('page-project-detail');
+    }
+    document.getElementById('btn-back-from-project').onclick = () => navigateTo('page-feed');
+
+    // --- ПРОФИЛЬ АВТОРА ---
+    window.openAuthorProfile = (authorKey) => {
+        currentAuthorKey = authorKey;
+        const author = authors[authorKey];
+        
+        document.getElementById('author-name').textContent = author.name;
+        document.getElementById('author-status').textContent = author.status;
+        document.getElementById('author-followers').textContent = author.followers;
+        
+        const initials = author.name.split(' ').map(n => n[0]).join('').substring(0,2);
+        document.getElementById('author-avatar').textContent = initials;
+
+        updateFollowButton();
+        navigateTo('page-author-profile');
+    };
+
+    function updateFollowButton() {
+        const btn = document.getElementById('btn-follow-author');
+        const isFollowing = subscriptions[`${currentUser}_${currentAuthorKey}`];
+
+        if (isFollowing) {
+            btn.textContent = "Отписаться";
+            btn.className = "btn-secondary";
+        } else {
+            btn.textContent = "Подписаться";
+            btn.className = "btn-primary";
+        }
+    }
+
+    document.getElementById('btn-follow-author').onclick = () => {
+        const key = `${currentUser}_${currentAuthorKey}`;
+        const author = authors[currentAuthorKey];
+        const followersEl = document.getElementById('author-followers');
+        let count = parseInt(followersEl.textContent);
+
+        if (subscriptions[key]) {
+            delete subscriptions[key];
+            followersEl.textContent = count - 1;
+            logAudit("UNFOLLOW", "ALLOWED", currentAuthorKey);
+        } else {
+            subscriptions[key] = true;
+            followersEl.textContent = count + 1;
+            logAudit("FOLLOW", "ALLOWED", currentAuthorKey);
+        }
+        
+        localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
+        updateFollowButton();
+        renderSubscriptions(); // Обновляем список на главном профиле
+    };
+
+    document.getElementById('btn-back-from-author').onclick = () => {
+        if (currentProjectId) {
+            openProjectDetail(currentProjectId);
+        } else {
+            navigateTo('page-feed');
+        }
+    };
+
+    // --- РЕДАКТИРОВАНИЕ ПРОФИЛЯ ---
     document.getElementById('btn-edit-profile').onclick = () => {
         document.getElementById('edit-name').value = users[currentUser].name;
         document.getElementById('edit-status').value = users[currentUser].status;
@@ -387,100 +551,6 @@
         document.getElementById('login-password').value = '';
     };
 
-    // --- ПРОСМОТР ЧУЖОГО ПРОФИЛЯ ---
-    function openOtherProfile(authorKey) {
-        currentAuthorKey = authorKey;
-        const author = authors[authorKey];
-        
-        document.getElementById('other-profile-name').textContent = author.name;
-        document.getElementById('other-profile-status').textContent = author.status;
-        document.getElementById('other-stat-followers').textContent = author.followers;
-        
-        const initials = author.name.split(' ').map(n => n[0]).join('').substring(0,2);
-        document.getElementById('other-profile-avatar').textContent = initials;
-
-        updateFollowButton();
-        navigateTo('page-other-profile');
-    }
-
-    function updateFollowButton() {
-        const btn = document.getElementById('btn-follow-other');
-        // Проверяем, подписан ли текущий пользователь на этого автора
-        const isFollowing = subscriptions[`${currentUser}_${currentAuthorKey}`];
-
-        if (isFollowing) {
-            btn.textContent = "Отписаться";
-            btn.className = "btn-secondary";
-        } else {
-            btn.textContent = "Подписаться";
-            btn.className = "btn-primary";
-        }
-    }
-
-    document.getElementById('btn-follow-other').onclick = () => {
-        const key = `${currentUser}_${currentAuthorKey}`;
-        const author = authors[currentAuthorKey];
-        const followersEl = document.getElementById('other-stat-followers');
-        let count = parseInt(followersEl.textContent);
-
-        if (subscriptions[key]) {
-            // Отписка
-            delete subscriptions[key];
-            followersEl.textContent = count - 1;
-            logAudit("UNFOLLOW", "ALLOWED", currentAuthorKey);
-        } else {
-            // Подписка
-            subscriptions[key] = true;
-            followersEl.textContent = count + 1;
-            logAudit("FOLLOW", "ALLOWED", currentAuthorKey);
-        }
-        
-        localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
-        updateFollowButton();
-    };
-
-    document.getElementById('btn-back-from-profile').onclick = () => navigateTo('page-feed');
-
-
-    // --- ЛЕНТА ---
-    function renderFeed() {
-        feedList.innerHTML = '';
-        const filtered = projectsData.filter(p => currentCategory === "Все" || p.cat === currentCategory);
-        const toDisplay = filtered.slice(0, displayedProjectsCount);
-
-        toDisplay.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'project-card';
-            div.onclick = () => openOtherProfile(p.authorKey);
-            div.innerHTML = `
-                <div class="project-header">
-                    <div class="project-title">${p.title}</div>
-                    <div class="project-category">${p.cat}</div>
-                </div>
-                <div class="project-author">Автор: ${authors[p.authorKey].name}</div>
-                <div class="project-tech">${p.tech}</div>
-            `;
-            feedList.appendChild(div);
-        });
-
-        btnLoadMore.style.display = (displayedProjectsCount >= filtered.length) ? 'none' : 'block';
-    }
-
-    btnLoadMore.onclick = () => {
-        displayedProjectsCount += 4;
-        renderFeed();
-    };
-
-    document.querySelectorAll('.filter-chip').forEach(chip => {
-        chip.onclick = () => {
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            currentCategory = chip.dataset.cat;
-            displayedProjectsCount = 4;
-            renderFeed();
-        };
-    });
-
     // --- ЗАМЕТКИ ---
     function loadNotes() {
         const stored = localStorage.getItem(`notes_${currentUser}`);
@@ -503,7 +573,7 @@
         }
 
         notes.forEach((n, index) => {
-            if (showOnlyFav && !n.isFavorite) return; // Пропускаем, если фильтр включен
+            if (showOnlyFav && !n.isFavorite) return;
 
             const div = document.createElement('div');
             div.className = 'note-item';
@@ -544,7 +614,6 @@
             notes.push({ title, body, date, isFavorite: false });
             logAudit("CREATE_NOTE", "ALLOWED", title);
         } else {
-            // Сохраняем статус избранного при редактировании
             const isFav = notes[editingNoteIndex].isFavorite;
             notes[editingNoteIndex] = { title, body, date, isFavorite: isFav };
             logAudit("UPDATE_NOTE", "ALLOWED", title);
@@ -585,7 +654,7 @@
         }
     };
 
-    // --- НАСТРОЙКИ И АУДИТ ---
+    // --- НАСТРОЙКИ ---
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.onchange = () => {
         document.documentElement.setAttribute('data-theme', themeToggle.checked ? 'dark' : 'light');
