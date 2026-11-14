@@ -17,6 +17,7 @@
             --border: #ddd;
         }
 
+        /* Тёмная тема (ЛР 8) */
         [data-theme="dark"] {
             --primary: #D0BCFF;
             --primary-light: #6750A4;
@@ -29,23 +30,27 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; line-height: 1.6; }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
         .hidden { display: none !important; }
 
-        /* Шапка */
+        /* Шапка профиля */
         .header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; }
         .header h1 { margin-bottom: 10px; }
+        .header p { opacity: 0.9; }
+        
         .profile-card { background: var(--surface); padding: 20px; border-radius: 15px; margin: -30px auto 20px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 600px; position: relative; z-index: 2; }
         .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; background: var(--primary-light); color: var(--text); font-size: 12px; font-weight: bold; margin-top: 10px; }
+        
+        /* Счётчики (ЛР 3) */
+        .stats-row { display: flex; justify-content: space-around; margin: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 15px 0; }
+        .stat-item { text-align: center; }
+        .stat-value { font-weight: bold; font-size: 20px; }
+        .stat-label { font-size: 12px; color: var(--text-muted); }
 
-        /* Формы и кнопки */
-        .card { background: var(--surface); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 16px; }
+        /* Кнопки */
         button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: opacity 0.2s; margin-right: 5px; margin-bottom: 5px; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
         .btn-secondary { background: var(--primary-light); color: var(--text); }
         .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
         .btn-danger { background: var(--danger); color: white; }
@@ -56,7 +61,12 @@
         .nav-btn { background: none; border: none; font-size: 24px; cursor: pointer; opacity: 0.6; transition: transform 0.2s; padding: 10px; }
         .nav-btn:hover, .nav-btn.active { opacity: 1; transform: scale(1.2); }
 
-        /* Лента проектов */
+        /* Карточки и инпуты */
+        .card { background: var(--surface); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .input-group { margin-bottom: 15px; }
+        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 16px; }
+        
+        /* Лента */
         .project-card { border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 15px; }
         .project-title { font-weight: bold; font-size: 18px; }
         .project-tech { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
@@ -70,10 +80,8 @@
         .note-title { font-weight: bold; }
         .note-date { font-size: 12px; color: var(--text-muted); }
 
-        /* Утилиты */
-        .text-center { text-align: center; }
-        .mt-10 { margin-top: 10px; }
-        .error-msg { color: var(--danger); font-size: 14px; margin-top: 5px; }
+        /* Аудит */
+        #audit-log { background: var(--bg); padding: 10px; border-radius: 5px; font-size: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -82,43 +90,55 @@
 <div id="screen-login" class="container" style="margin-top: 50px;">
     <div class="card text-center">
         <h2>Вход в Портфолио</h2>
-        <p style="color: var(--text-muted); margin-bottom: 20px;">Введите данные для доступа</p>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Введите логин и пароль</p>
         <div class="input-group">
             <input type="text" id="login-username" placeholder="Логин (admin или user)" autocomplete="off">
         </div>
         <div class="input-group">
             <input type="password" id="login-password" placeholder="Пароль (1234)">
         </div>
-        <p id="login-error" class="error-msg hidden"></p>
-        <button id="btn-login" class="btn-primary" style="width: 100%;">Войти</button>
+        <p id="login-error" style="color: var(--danger); font-size: 14px; margin-bottom: 10px;" class="hidden"></p>
+        <button id="btn-login" class="btn-primary">Войти</button>
     </div>
 </div>
 
 <!-- ОСНОВНОЙ ЭКРАН ПРИЛОЖЕНИЯ -->
 <div id="screen-app" class="container hidden">
     
-    <!-- Шапка профиля -->
+    <!-- Шапка профиля (ЛР 3, 8) -->
     <div class="header">
+        <div style="width: 64px; height: 64px; background: white; border-radius: 50%; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: var(--primary);" id="profile-avatar">ДГ</div>
         <h1 id="profile-name">Имя</h1>
         <p id="profile-status">Статус</p>
     </div>
 
     <div class="profile-card">
         <span class="role-badge" id="profile-role">Роль</span>
-        <div style="margin-top: 15px;">
-            <button id="btn-logout" class="btn-outline btn-sm">Выйти</button>
-            <button id="btn-toggle-theme" class="btn-secondary btn-sm">Тема</button>
+        
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-value" id="stat-followers">1240</div>
+                <div class="stat-label">Подписчики</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">312</div>
+                <div class="stat-label">Подписки</div>
+            </div>
         </div>
+
+        <button id="btn-subscribe" class="btn-primary" style="margin-bottom: 10px;">Подписаться</button>
+        <button id="btn-logout" class="btn-outline" style="width: 100%;">Выйти из аккаунта</button>
     </div>
 
-    <!-- Нижняя навигация -->
+    <!-- Навигация (ЛР 6) -->
     <div class="nav-bar">
         <button class="nav-btn active" data-target="tab-feed" title="Лента">👥</button>
         <button class="nav-btn" data-target="tab-notes" title="Заметки">📝</button>
+        <button class="nav-btn" data-target="tab-settings" title="Настройки">⚙</button>
         <button class="nav-btn hidden" data-target="tab-admin" id="nav-admin" title="Админ">📋</button>
     </div>
 
-    <!-- Вкладка: Лента сообщества -->
+    <!-- Вкладка: Лента сообщества (ЛР 5, 10) -->
     <div id="tab-feed" class="tab-content">
         <div class="card">
             <h2>Лента сообщества</h2>
@@ -132,36 +152,49 @@
         </div>
     </div>
 
-    <!-- Вкладка: Заметки -->
+    <!-- Вкладка: Заметки (ЛР 11) -->
     <div id="tab-notes" class="tab-content hidden">
         <div class="card">
             <h2>Мои черновики</h2>
             <div class="input-group">
-                <input type="text" id="note-title" placeholder="Заголовок">
-                <textarea id="note-body" rows="3" placeholder="Текст заметки..." class="mt-10"></textarea>
+                <input type="text" id="note-title" placeholder="Заголовок идеи">
+                <textarea id="note-body" rows="3" placeholder="Описание проекта, ссылки..." style="margin-top: 10px;"></textarea>
             </div>
             <button id="btn-save-note" class="btn-primary">Сохранить</button>
-            <div id="notes-list" class="mt-10"></div>
+            <div id="notes-list" style="margin-top: 20px;"></div>
         </div>
     </div>
 
-    <!-- Вкладка: Админ (только для ADMIN) -->
+    <!-- Вкладка: Настройки (ЛР 6, 8) -->
+    <div id="tab-settings" class="tab-content hidden">
+        <div class="card">
+            <h2>Настройки</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <span>Тёмная тема</span>
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вкладка: Админ (ЛР 14) -->
     <div id="tab-admin" class="tab-content hidden">
         <div class="card">
             <h2>Журнал аудита</h2>
-            <pre id="audit-log" style="background: var(--bg); padding: 10px; border-radius: 5px; font-size: 12px; max-height: 300px; overflow-y: auto;">Загрузка...</pre>
-            <button id="btn-refresh-audit" class="btn-secondary btn-sm mt-10">Обновить</button>
+            <div id="audit-log">Загрузка...</div>
+            <button id="btn-refresh-audit" class="btn-secondary btn-sm" style="margin-top: 10px;">Обновить</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    // --- ДАННЫЕ И СОСТОЯНИЕ ---
-    // Только ДВА аккаунта: user и admin
+    // --- ДАННЫЕ ---
     const users = {
-        'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь' },
-        'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор' }
+        'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь', followers: 1240 },
+        'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор', followers: 5400 }
     };
 
     const projects = [
@@ -175,8 +208,9 @@
     let currentCategory = "Все";
     let notes = [];
     let auditLog = [];
+    let isSubscribed = false;
 
-    // --- ЭЛЕМЕНТЫ DOM ---
+    // --- DOM ---
     const screenLogin = document.getElementById('screen-login');
     const screenApp = document.getElementById('screen-app');
     const loginError = document.getElementById('login-error');
@@ -185,8 +219,6 @@
     const auditLogEl = document.getElementById('audit-log');
 
     // --- ФУНКЦИИ ---
-    
-    // Логирование аудита
     function logAudit(action, result = "ALLOWED", details = "") {
         const time = new Date().toLocaleString();
         auditLog.push(`[${time}] ${action} | ${result} | ${details}`);
@@ -219,20 +251,26 @@
     document.getElementById('btn-logout').onclick = () => {
         logAudit("LOGOUT", "ALLOWED", currentUser);
         currentUser = null;
+        isSubscribed = false;
         screenApp.classList.add('hidden');
         screenLogin.classList.remove('hidden');
         document.getElementById('login-username').value = '';
         document.getElementById('login-password').value = '';
     };
 
-    // Обновление профиля
+    // Профиль (ЛР 3, 8)
     function updateProfile() {
         const user = users[currentUser];
         document.getElementById('profile-name').textContent = user.name;
         document.getElementById('profile-status').textContent = user.status;
         document.getElementById('profile-role').textContent = user.role;
+        document.getElementById('stat-followers').textContent = user.followers;
 
-        // Скрываем вкладку Админа, если роль не Админ
+        // Аватар (инициалы)
+        const initials = user.name.split(' ').map(n => n[0]).join('').substring(0,2);
+        document.getElementById('profile-avatar').textContent = initials;
+
+        // Скрываем админку для обычного пользователя
         if (user.role !== 'Администратор') {
             document.getElementById('nav-admin').classList.add('hidden');
         } else {
@@ -240,7 +278,23 @@
         }
     }
 
-    // Переключение вкладок
+    // Подписка (ЛР 4)
+    document.getElementById('btn-subscribe').onclick = () => {
+        const btn = document.getElementById('btn-subscribe');
+        const followersEl = document.getElementById('stat-followers');
+        let count = parseInt(followersEl.textContent);
+        
+        if (!isSubscribed) {
+            isSubscribed = true;
+            followersEl.textContent = count + 1;
+            btn.textContent = "Вы подписаны";
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-secondary');
+            logAudit("SUBSCRIBE", "ALLOWED", "Подписка оформлена");
+        }
+    };
+
+    // Переключение вкладок (ЛР 6)
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.onclick = () => {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -250,19 +304,20 @@
         };
     });
 
-    // Тема
-    document.getElementById('btn-toggle-theme').onclick = () => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    // Тёмная тема (ЛР 8)
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.onchange = () => {
+        if (themeToggle.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
     };
 
-    // Лента проектов (с фильтрацией)
+    // Лента (ЛР 5, 10)
     function renderFeed() {
         feedList.innerHTML = '';
         const filtered = projects.filter(p => currentCategory === "Все" || p.cat === currentCategory);
-        if (filtered.length === 0) {
-            feedList.innerHTML = '<p>Нет проектов в этой категории.</p>';
-        }
         filtered.forEach(p => {
             const div = document.createElement('div');
             div.className = 'project-card';
@@ -276,7 +331,6 @@
         });
     }
 
-    // Фильтры категорий
     document.querySelectorAll('.filter-chip').forEach(chip => {
         chip.onclick = () => {
             document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -286,7 +340,7 @@
         };
     });
 
-    // Заметки (сохранение в localStorage)
+    // Заметки (ЛР 11)
     function loadNotes() {
         const stored = localStorage.getItem(`notes_${currentUser}`);
         notes = stored ? JSON.parse(stored) : [];
@@ -306,7 +360,7 @@
                 <div class="note-title">${n.title}</div>
                 <div>${n.body.substring(0, 40)}...</div>
                 <div class="note-date">${n.date}</div>
-                <button class="btn-danger btn-sm mt-10" onclick="deleteNote(${index})">Удалить</button>
+                <button class="btn-danger btn-sm" style="margin-top: 5px;" onclick="deleteNote(${index})">Удалить</button>
             `;
             notesList.appendChild(div);
         });
@@ -334,15 +388,14 @@
         }
     };
 
-    // Аудит
+    // Админ (ЛР 14)
     function loadAudit() {
         if (users[currentUser].role !== 'Администратор') return;
         auditLogEl.textContent = auditLog.join('\n') || 'Журнал пуст.';
     }
-
     document.getElementById('btn-refresh-audit').onclick = loadAudit;
 
-    // Инициализация
+    // Старт
     logAudit("SYSTEM_START", "ALLOWED", "Приложение запущено");
 
 </script>
