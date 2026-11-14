@@ -66,7 +66,7 @@
         label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; }
         input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font-family: inherit; font-size: 15px; }
 
-        /* Лента */
+        /* Лента и проекты */
         .project-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 16px; cursor: pointer; transition: border-color 0.2s; }
         .project-card:hover { border-color: var(--primary); }
         .project-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
@@ -74,6 +74,7 @@
         .project-category { font-size: 12px; font-weight: 600; color: var(--primary); text-transform: uppercase; }
         .project-author { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; cursor: pointer; text-decoration: underline; }
         .project-author:hover { color: var(--primary); }
+        .project-tech { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
         
         /* Фильтры */
         .filter-row { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
@@ -89,11 +90,11 @@
         .star-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--border); padding: 0 10px; transition: color 0.2s; }
         .star-btn.active { color: var(--warning); }
 
-        /* Список подписок */
+        /* Подписки */
         .subscription-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); }
         .subscription-item:last-child { border-bottom: none; }
 
-        /* Экран входа */
+        /* Вход и аудит */
         .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
         #audit-log { background: var(--bg); padding: 16px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; border: 1px solid var(--border); }
     </style>
@@ -147,14 +148,10 @@
             </div>
 
             <h3 style="margin: 24px 0 12px;">Мои подписки</h3>
-            <div class="card" id="my-subscriptions-list">
-                <!-- Сюда будут добавляться подписки -->
-            </div>
+            <div class="card" id="my-subscriptions-list"></div>
             
             <h3 style="margin: 24px 0 12px;">Мои работы</h3>
-            <div id="my-projects-list">
-                <!-- Сюда будут выводиться ваши проекты -->
-            </div>
+            <div id="my-projects-list"></div>
         </div>
 
         <!-- ДЕТАЛИ ПРОЕКТА -->
@@ -302,9 +299,9 @@
         { id: 12, title: "Сервис доставки", tech: "React Native", cat: "Android", desc: "Приложение для заказа еды.", authorKey: 'author3', owner: 'author3' },
         
         // Проекты для профиля user
-        { id: 13, title: "Мой первый Android App", tech: "Java, XML", cat: "Android", desc: "Учебный проект по основам Android.", authorKey: 'user', owner: 'user' },
-        { id: 14, title: "Портфолио v1.0", tech: "HTML, CSS", cat: "Web", desc: "Первая версия этого сайта.", authorKey: 'user', owner: 'user' },
-        { id: 15, title: "Дизайн для друга", tech: "Figma", cat: "Дизайн", desc: "Сделал макет для проекта друга.", authorKey: 'user', owner: 'user' }
+        { id: 13, title: "Мой первый Android App", tech: "Java, XML", cat: "Android", desc: "Учебный проект по основам Android. Включает работу с Activity, Intent и базами данных SQLite.", authorKey: 'user', owner: 'user' },
+        { id: 14, title: "Портфолио v1.0", tech: "HTML, CSS", cat: "Web", desc: "Первая версия этого сайта. Сделан на чистом HTML и CSS без использования фреймворков.", authorKey: 'user', owner: 'user' },
+        { id: 15, title: "Дизайн для друга", tech: "Figma", cat: "Дизайн", desc: "Сделал макет для проекта друга. Разработан дизайн главного экрана и экрана профиля.", authorKey: 'user', owner: 'user' }
     ];
 
     let currentUser = null;
@@ -391,7 +388,7 @@
         renderMyProjects();
     }
     
-        // ОТРИСОВКА МОИХ РАБОТ
+    // ОТРИСОВКА МОИХ РАБОТ
     function renderMyProjects() {
         if (!myProjectsList) return;
 
