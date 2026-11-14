@@ -42,7 +42,7 @@
         .profile-card { background: var(--surface); padding: 20px; border-radius: 15px; margin: -30px auto 20px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 600px; position: relative; z-index: 2; }
         .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; background: var(--primary-light); color: var(--text); font-size: 12px; font-weight: bold; margin-top: 10px; }
         
-        /* Счётчики (ЛР 3) */
+        /* Счётчики */
         .stats-row { display: flex; justify-content: space-around; margin: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 15px 0; }
         .stat-item { text-align: center; }
         .stat-value { font-weight: bold; font-size: 20px; }
@@ -90,7 +90,7 @@
             <input type="text" id="login-username" placeholder="Логин (admin или user)" autocomplete="off">
         </div>
         <div class="input-group">
-            <input type="password" id="login-password" placeholder="Пароль ">
+            <input type="password" id="login-password" placeholder="Пароль (1234)">
         </div>
         <p id="login-error" style="color: var(--danger); font-size: 14px; margin-bottom: 10px; text-align: center;" class="hidden"></p>
         <button id="btn-login" class="btn-primary">Войти</button>
@@ -168,6 +168,7 @@
                     <textarea id="note-body" rows="3" placeholder="Описание проекта..." style="margin-top: 10px;"></textarea>
                 </div>
                 <button id="btn-save-note" class="btn-primary">Сохранить</button>
+                <button id="btn-cancel-note-edit" class="btn-outline hidden" style="margin-top: 10px;">Отменить редактирование</button>
             </div>
             <div id="notes-list"></div>
         </div>
@@ -180,6 +181,10 @@
                     <span style="font-size: 18px;">Тёмная тема</span>
                     <input type="checkbox" id="theme-toggle" style="width: 24px; height: 24px; cursor: pointer;">
                 </div>
+            </div>
+            <div class="card" style="text-align: center; color: var(--text-muted);">
+                <p>Приложение Портфолио</p>
+                <p>Версия 1.0</p>
             </div>
         </div>
 
@@ -205,6 +210,7 @@
 
 </div>
 
+<script>
     // --- ДАННЫЕ ---
     const users = {
         'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь', followers: 1240 },
@@ -223,7 +229,7 @@
     let notes = [];
     let auditLog = [];
     let isSubscribed = false;
-    let editingNoteIndex = -1; // -1 означает, что мы создаем новую, иначе индекс редактируемой
+    let editingNoteIndex = -1; // -1 значит создаем новую, иначе индекс изменяемой
 
     // --- DOM ---
     const screenLogin = document.getElementById('screen-login');
@@ -389,7 +395,6 @@
         notes.forEach((n, index) => {
             const div = document.createElement('div');
             div.className = 'note-item card';
-            // Клик по карточке открывает её для редактирования
             div.innerHTML = `
                 <div class="note-title">${n.title}</div>
                 <div>${n.body}</div>
@@ -403,7 +408,7 @@
         });
     }
 
-    // Функция сохранения (создание или обновление)
+    // СОХРАНЕНИЕ ИЛИ ОБНОВЛЕНИЕ ЗАМЕТКИ
     document.getElementById('btn-save-note').onclick = () => {
         const title = document.getElementById('note-title').value.trim();
         const body = document.getElementById('note-body').value.trim();
@@ -419,8 +424,10 @@
             // Обновление существующей
             notes[editingNoteIndex] = { title, body, date };
             logAudit("UPDATE_NOTE", "ALLOWED", title);
-            editingNoteIndex = -1; // Сбрасываем режим редактирования
+            // Сбрасываем режим редактирования
+            editingNoteIndex = -1;
             document.getElementById('btn-save-note').textContent = "Сохранить";
+            document.getElementById('btn-cancel-note-edit').classList.add('hidden');
         }
 
         localStorage.setItem(`notes_${currentUser}`, JSON.stringify(notes));
@@ -429,23 +436,31 @@
         renderNotes();
     };
 
-    // Функция редактирования (открывает в форме)
+    // ОТКРЫТИЕ ДЛЯ РЕДАКТИРОВАНИЯ
     window.editNote = (index) => {
-        // Если уже что-то редактировали, сохраняем старое (опционально)
         editingNoteIndex = index;
         const note = notes[index];
         
         document.getElementById('note-title').value = note.title;
         document.getElementById('note-body').value = note.body;
         
-        // Меняем текст кнопки
+        // Меняем интерфейс
         document.getElementById('btn-save-note').textContent = "Обновить заметку";
+        document.getElementById('btn-cancel-note-edit').classList.remove('hidden');
         
-        // Прокручиваем вверх к форме
         document.querySelector('#page-notes').scrollIntoView({ behavior: 'smooth' });
     };
 
-    // Удаление
+    // ОТМЕНА РЕДАКТИРОВАНИЯ
+    document.getElementById('btn-cancel-note-edit').onclick = () => {
+        editingNoteIndex = -1;
+        document.getElementById('note-title').value = '';
+        document.getElementById('note-body').value = '';
+        document.getElementById('btn-save-note').textContent = "Сохранить";
+        document.getElementById('btn-cancel-note-edit').classList.add('hidden');
+    };
+
+    // УДАЛЕНИЕ
     window.deleteNote = (index) => {
         if (confirm('Удалить заметку?')) {
             logAudit("DELETE_NOTE", "ALLOWED", notes[index].title);
@@ -459,17 +474,20 @@
                 document.getElementById('note-title').value = '';
                 document.getElementById('note-body').value = '';
                 document.getElementById('btn-save-note').textContent = "Сохранить";
+                document.getElementById('btn-cancel-note-edit').classList.add('hidden');
             }
         }
     };
 
+    // Админ
     function loadAudit() {
         if (currentUser && users[currentUser].role !== 'Администратор') return;
         document.getElementById('audit-log').textContent = auditLog.join('\n') || 'Журнал пуст.';
     }
-    
     document.getElementById('btn-refresh-audit').onclick = loadAudit;
 
     logAudit("SYSTEM_START", "ALLOWED", "Приложение запущено");
+
+</script>
 </body>
 </html>
