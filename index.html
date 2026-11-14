@@ -90,7 +90,7 @@
             <input type="text" id="login-username" placeholder="Логин (admin или user)" autocomplete="off">
         </div>
         <div class="input-group">
-            <input type="password" id="login-password" placeholder="Пароль (1234)">
+            <input type="password" id="login-password" placeholder="Пароль ">
         </div>
         <p id="login-error" style="color: var(--danger); font-size: 14px; margin-bottom: 10px; text-align: center;" class="hidden"></p>
         <button id="btn-login" class="btn-primary">Войти</button>
@@ -205,7 +205,7 @@
 
 </div>
 
-<script>
+    // --- ДАННЫЕ ---
     const users = {
         'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь', followers: 1240 },
         'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор', followers: 5400 }
@@ -223,9 +223,13 @@
     let notes = [];
     let auditLog = [];
     let isSubscribed = false;
+    let editingNoteIndex = -1; // -1 означает, что мы создаем новую, иначе индекс редактируемой
 
+    // --- DOM ---
     const screenLogin = document.getElementById('screen-login');
     const screenApp = document.getElementById('screen-app');
+
+    // --- ЛОГИКА ---
 
     function logAudit(action, result = "ALLOWED", details = "") {
         const time = new Date().toLocaleString();
@@ -233,6 +237,7 @@
         if (auditLog.length > 50) auditLog.shift();
     }
 
+    // Вход
     document.getElementById('btn-login').onclick = () => {
         const user = document.getElementById('login-username').value.trim();
         const pass = document.getElementById('login-password').value;
@@ -256,6 +261,7 @@
         }
     };
 
+    // Навигация
     function navigateTo(pageId) {
         document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
         document.getElementById(pageId).classList.remove('hidden');
@@ -270,6 +276,7 @@
         btn.onclick = () => navigateTo(btn.dataset.target);
     });
 
+    // Обновление профиля
     function updateProfileUI() {
         const user = users[currentUser];
         document.getElementById('profile-name').textContent = user.name;
@@ -328,6 +335,7 @@
         document.getElementById('login-password').value = '';
     };
 
+    // Тема
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.onchange = () => {
         if (themeToggle.checked) {
@@ -337,6 +345,7 @@
         }
     };
 
+    // Лента
     function renderFeed() {
         const feedList = document.getElementById('feed-list');
         feedList.innerHTML = '';
@@ -363,6 +372,7 @@
         };
     });
 
+    // --- ЗАМЕТКИ (ЛР 11) ---
     function loadNotes() {
         const stored = localStorage.getItem(`notes_${currentUser}`);
         notes = stored ? JSON.parse(stored) : [];
@@ -379,35 +389,77 @@
         notes.forEach((n, index) => {
             const div = document.createElement('div');
             div.className = 'note-item card';
+            // Клик по карточке открывает её для редактирования
             div.innerHTML = `
                 <div class="note-title">${n.title}</div>
                 <div>${n.body}</div>
                 <div class="note-date">${n.date}</div>
-                <button class="btn-danger btn-sm" style="margin-top: 5px;" onclick="deleteNote(${index})">Удалить</button>
+                <div style="margin-top: 10px;">
+                    <button class="btn-secondary btn-sm" onclick="editNote(${index})">Редактировать</button>
+                    <button class="btn-danger btn-sm" onclick="deleteNote(${index})">Удалить</button>
+                </div>
             `;
             notesList.appendChild(div);
         });
     }
 
+    // Функция сохранения (создание или обновление)
     document.getElementById('btn-save-note').onclick = () => {
         const title = document.getElementById('note-title').value.trim();
         const body = document.getElementById('note-body').value.trim();
         if (!title) return alert('Введите заголовок');
         
-        notes.push({ title, body, date: new Date().toLocaleString() });
+        const date = new Date().toLocaleString();
+
+        if (editingNoteIndex === -1) {
+            // Создание новой
+            notes.push({ title, body, date });
+            logAudit("CREATE_NOTE", "ALLOWED", title);
+        } else {
+            // Обновление существующей
+            notes[editingNoteIndex] = { title, body, date };
+            logAudit("UPDATE_NOTE", "ALLOWED", title);
+            editingNoteIndex = -1; // Сбрасываем режим редактирования
+            document.getElementById('btn-save-note').textContent = "Сохранить";
+        }
+
         localStorage.setItem(`notes_${currentUser}`, JSON.stringify(notes));
         document.getElementById('note-title').value = '';
         document.getElementById('note-body').value = '';
         renderNotes();
-        logAudit("CREATE_NOTE", "ALLOWED", title);
     };
 
+    // Функция редактирования (открывает в форме)
+    window.editNote = (index) => {
+        // Если уже что-то редактировали, сохраняем старое (опционально)
+        editingNoteIndex = index;
+        const note = notes[index];
+        
+        document.getElementById('note-title').value = note.title;
+        document.getElementById('note-body').value = note.body;
+        
+        // Меняем текст кнопки
+        document.getElementById('btn-save-note').textContent = "Обновить заметку";
+        
+        // Прокручиваем вверх к форме
+        document.querySelector('#page-notes').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Удаление
     window.deleteNote = (index) => {
         if (confirm('Удалить заметку?')) {
             logAudit("DELETE_NOTE", "ALLOWED", notes[index].title);
             notes.splice(index, 1);
             localStorage.setItem(`notes_${currentUser}`, JSON.stringify(notes));
             renderNotes();
+            
+            // Если удалили ту, которую редактировали, сбрасываем форму
+            if (editingNoteIndex === index) {
+                editingNoteIndex = -1;
+                document.getElementById('note-title').value = '';
+                document.getElementById('note-body').value = '';
+                document.getElementById('btn-save-note').textContent = "Сохранить";
+            }
         }
     };
 
@@ -419,7 +471,5 @@
     document.getElementById('btn-refresh-audit').onclick = loadAudit;
 
     logAudit("SYSTEM_START", "ALLOWED", "Приложение запущено");
-
-</script>
 </body>
 </html>
