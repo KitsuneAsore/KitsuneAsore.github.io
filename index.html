@@ -42,7 +42,7 @@
         .card { background: var(--surface); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 16px; }
+        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 16px; }
         button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: opacity 0.2s; margin-right: 5px; margin-bottom: 5px; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-primary { background: var(--primary); color: white; }
@@ -70,16 +70,10 @@
         .note-title { font-weight: bold; }
         .note-date { font-size: 12px; color: var(--text-muted); }
 
-        /* Модальное окно */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: var(--surface); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
-
         /* Утилиты */
         .text-center { text-align: center; }
         .mt-10 { margin-top: 10px; }
-        .mb-10 { margin-bottom: 10px; }
         .error-msg { color: var(--danger); font-size: 14px; margin-top: 5px; }
-        .success-msg { color: var(--success); font-size: 14px; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -90,7 +84,7 @@
         <h2>Вход в Портфолио</h2>
         <p style="color: var(--text-muted); margin-bottom: 20px;">Введите данные для доступа</p>
         <div class="input-group">
-            <input type="text" id="login-username" placeholder="Логин (admin, manager, user)" autocomplete="off">
+            <input type="text" id="login-username" placeholder="Логин (admin или user)" autocomplete="off">
         </div>
         <div class="input-group">
             <input type="password" id="login-password" placeholder="Пароль (1234)">
@@ -121,7 +115,7 @@
     <div class="nav-bar">
         <button class="nav-btn active" data-target="tab-feed" title="Лента">👥</button>
         <button class="nav-btn" data-target="tab-notes" title="Заметки">📝</button>
-        <button class="nav-btn" data-target="tab-admin" id="nav-admin" title="Админ">📋</button>
+        <button class="nav-btn hidden" data-target="tab-admin" id="nav-admin" title="Админ">📋</button>
     </div>
 
     <!-- Вкладка: Лента сообщества -->
@@ -164,9 +158,9 @@
 
 <script>
     // --- ДАННЫЕ И СОСТОЯНИЕ ---
+    // Только ДВА аккаунта: user и admin
     const users = {
         'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь' },
-        'manager': { password: '1234', name: 'Мария Менеджерова', status: 'Старший модератор', role: 'Менеджер' },
         'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор' }
     };
 
@@ -196,7 +190,7 @@
     function logAudit(action, result = "ALLOWED", details = "") {
         const time = new Date().toLocaleString();
         auditLog.push(`[${time}] ${action} | ${result} | ${details}`);
-        if (auditLog.length > 50) auditLog.shift(); // Храним последние 50
+        if (auditLog.length > 50) auditLog.shift();
     }
 
     // Вход
