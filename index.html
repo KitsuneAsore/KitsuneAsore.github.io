@@ -38,7 +38,7 @@
         .nav-btn:hover, .nav-btn.active { color: var(--primary); }
 
         /* Профиль */
-        .header-profile { background: var(--surface); border: 1px solid var(--border); padding: 32px 24px; text-align: center; border-radius: 12px; margin-bottom: 24px; }
+        .header-profile { background: var(--surface); border: 1px solid var(--border); padding: 32px 24px; text-align: center; border-radius: 12px; margin-bottom: 24px; position: relative; }
         .avatar-circle { width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 50%; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; }
         .header-profile h1 { font-size: 24px; margin-bottom: 4px; }
         .header-profile p { color: var(--text-muted); font-size: 14px; }
@@ -55,6 +55,7 @@
         .btn-primary { background: var(--primary); color: white; width: 100%; }
         .btn-primary:hover { background: var(--primary-hover); }
         .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); width: 100%; }
+        .btn-secondary:hover { background: var(--border); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); width: 100%; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 12px; font-size: 13px; width: auto; }
@@ -88,13 +89,13 @@
         .star-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--border); padding: 0 10px; transition: color 0.2s; }
         .star-btn.active { color: var(--warning); }
 
-        /* Экран входа */
-        .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
-        #audit-log { background: var(--bg); padding: 16px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; border: 1px solid var(--border); }
-
         /* Список подписок */
         .subscription-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); }
         .subscription-item:last-child { border-bottom: none; }
+
+        /* Экран входа */
+        .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+        #audit-log { background: var(--bg); padding: 16px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; border: 1px solid var(--border); }
     </style>
 </head>
 <body>
@@ -149,8 +150,9 @@
             <div class="card" id="my-subscriptions-list">
                 <!-- Сюда будут добавляться подписки -->
             </div>
+            
             <h3 style="margin: 24px 0 12px;">Мои работы</h3>
-            <div class="card" id="my-projects-list">
+            <div id="my-projects-list">
                 <!-- Сюда будут выводиться ваши проекты -->
             </div>
         </div>
@@ -271,6 +273,7 @@
 
 </div>
 
+<script>
     // --- ДАННЫЕ ---
     const users = {
         'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь', followers: 1240, following: 312 },
@@ -283,7 +286,7 @@
         'author3': { name: 'Елена Смирнова', status: 'Fullstack разработчик', followers: 450 }
     };
 
-    // Проекты. Добавлено поле owner для привязки к профилю
+    // Проекты
     const projectsData = [
         { id: 1, title: "Приложение Погоды", tech: "Kotlin, Compose, Room", cat: "Android", desc: "Показывает текущую погоду и прогноз на 7 дней.", authorKey: 'author1', owner: 'author1' },
         { id: 2, title: "Интерфейс банка", tech: "Figma", cat: "Дизайн", desc: "Дизайн мобильного банка.", authorKey: 'author2', owner: 'author2' },
@@ -298,7 +301,7 @@
         { id: 11, title: "Мобильная игра", tech: "Unity, C#", cat: "Дизайн", desc: "2D-платформер.", authorKey: 'author1', owner: 'author1' },
         { id: 12, title: "Сервис доставки", tech: "React Native", cat: "Android", desc: "Приложение для заказа еды.", authorKey: 'author3', owner: 'author3' },
         
-        // Добавляем 3 проекта специально для вашего профиля (user)
+        // Проекты для профиля user
         { id: 13, title: "Мой первый Android App", tech: "Java, XML", cat: "Android", desc: "Учебный проект по основам Android.", authorKey: 'user', owner: 'user' },
         { id: 14, title: "Портфолио v1.0", tech: "HTML, CSS", cat: "Web", desc: "Первая версия этого сайта.", authorKey: 'user', owner: 'user' },
         { id: 15, title: "Дизайн для друга", tech: "Figma", cat: "Дизайн", desc: "Сделал макет для проекта друга.", authorKey: 'user', owner: 'user' }
@@ -321,6 +324,7 @@
     const btnLoadMore = document.getElementById('btn-load-more');
     const notesList = document.getElementById('notes-list');
     const subsList = document.getElementById('my-subscriptions-list');
+    const myProjectsList = document.getElementById('my-projects-list');
 
     // --- ЛОГИКА ---
     function logAudit(action, result = "ALLOWED", details = "") {
@@ -384,24 +388,21 @@
             document.getElementById('nav-admin').classList.remove('hidden');
         }
         
-        // ОБНОВЛЯЕМ СПИСОК НАШИХ РАБОТ
         renderMyProjects();
     }
     
-    // ФУНКЦИЯ ОТРИСОВКИ МОИХ РАБОТ
+    // ОТРИСОВКА МОИХ РАБОТ
     function renderMyProjects() {
-        const container = document.getElementById('my-projects-list');
-        if (!container) return; // Если элемента нет в HTML
+        if (!myProjectsList) return;
 
-        // Берем проекты, где owner совпадает с текущим пользователем
         const myProjects = projectsData.filter(p => p.owner === currentUser);
 
         if (myProjects.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Вы пока не опубликовали ни одной работы.</p>';
+            myProjectsList.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Вы пока не опубликовали ни одной работы.</p>';
             return;
         }
 
-        container.innerHTML = '';
+        myProjectsList.innerHTML = '';
         myProjects.forEach(p => {
             const div = document.createElement('div');
             div.className = 'project-card';
@@ -412,7 +413,7 @@
                 </div>
                 <div class="project-tech">${p.tech}</div>
             `;
-            container.appendChild(div);
+            myProjectsList.appendChild(div);
         });
     }
 
@@ -448,8 +449,7 @@
         const toDisplay = filtered.slice(0, displayedProjectsCount);
 
         toDisplay.forEach(p => {
-            // Показываем в ленте только проекты других авторов (не свои)
-            if (p.owner === currentUser) return; 
+            if (p.owner === currentUser) return; // Не показываем свои проекты в ленте
 
             const div = document.createElement('div');
             div.className = 'project-card';
