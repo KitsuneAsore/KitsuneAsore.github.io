@@ -391,7 +391,7 @@
         renderMyProjects();
     }
     
-    // ОТРИСОВКА МОИХ РАБОТ
+        // ОТРИСОВКА МОИХ РАБОТ
     function renderMyProjects() {
         if (!myProjectsList) return;
 
@@ -406,6 +406,9 @@
         myProjects.forEach(p => {
             const div = document.createElement('div');
             div.className = 'project-card';
+            // ДОБАВЛЯЕМ ОБРАБОТЧИК КЛИКА
+            div.onclick = () => openProjectDetail(p.id);
+            
             div.innerHTML = `
                 <div class="project-header">
                     <div class="project-title">${p.title}</div>
