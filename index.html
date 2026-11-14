@@ -5,88 +5,352 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Портфолио | Дарья Глазунова</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: #f4f4f9;
-            color: #333;
+        :root {
+            --primary: #6750A4;
+            --primary-light: #D0BCFF;
+            --bg: #f4f4f9;
+            --surface: #ffffff;
+            --text: #333;
+            --text-muted: #666;
+            --danger: #B3261E;
+            --success: #2E7D32;
+            --border: #ddd;
         }
-        .header {
-            background: linear-gradient(135deg, #6750A4, #D0BCFF);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
+
+        [data-theme="dark"] {
+            --primary: #D0BCFF;
+            --primary-light: #6750A4;
+            --bg: #1C1B1F;
+            --surface: #2B2930;
+            --text: #E6E1E5;
+            --text-muted: #938F99;
+            --border: #49454F;
         }
-        .header h1 { margin: 0; font-size: 2.5em; }
-        .header p { font-size: 1.2em; opacity: 0.9; }
-        .container {
-            max-width: 800px;
-            margin: -30px auto 30px auto;
-            padding: 0 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h2 { color: #6750A4; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .project {
-            border-left: 4px solid #6750A4;
-            padding-left: 15px;
-            margin-bottom: 20px;
-        }
-        .project h3 { margin: 0 0 5px 0; }
-        .tech { color: #888; font-size: 0.9em; margin-bottom: 10px; }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #6750A4;
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            transition: background 0.3s;
-        }
-        .btn:hover { background-color: #53408b; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hidden { display: none !important; }
+
+        /* Шапка */
+        .header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; }
+        .header h1 { margin-bottom: 10px; }
+        .profile-card { background: var(--surface); padding: 20px; border-radius: 15px; margin: -30px auto 20px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 600px; position: relative; z-index: 2; }
+        .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; background: var(--primary-light); color: var(--text); font-size: 12px; font-weight: bold; margin-top: 10px; }
+
+        /* Формы и кнопки */
+        .card { background: var(--surface); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 16px; }
+        button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: opacity 0.2s; margin-right: 5px; margin-bottom: 5px; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--primary-light); color: var(--text); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { font-size: 14px; padding: 6px 12px; }
+
+        /* Навигация */
+        .nav-bar { display: flex; justify-content: space-around; background: var(--surface); padding: 10px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .nav-btn { background: none; border: none; font-size: 24px; cursor: pointer; opacity: 0.6; transition: transform 0.2s; padding: 10px; }
+        .nav-btn:hover, .nav-btn.active { opacity: 1; transform: scale(1.2); }
+
+        /* Лента проектов */
+        .project-card { border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 15px; }
+        .project-title { font-weight: bold; font-size: 18px; }
+        .project-tech { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+        .project-category { font-size: 12px; font-weight: bold; color: var(--primary); }
+        .filter-row { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .filter-chip { padding: 5px 15px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
+        .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Заметки */
+        .note-item { border-bottom: 1px solid var(--border); padding: 10px 0; }
+        .note-title { font-weight: bold; }
+        .note-date { font-size: 12px; color: var(--text-muted); }
+
+        /* Модальное окно */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: var(--surface); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
+
+        /* Утилиты */
+        .text-center { text-align: center; }
+        .mt-10 { margin-top: 10px; }
+        .mb-10 { margin-bottom: 10px; }
+        .error-msg { color: var(--danger); font-size: 14px; margin-top: 5px; }
+        .success-msg { color: var(--success); font-size: 14px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
+<!-- ЭКРАН ВХОДА -->
+<div id="screen-login" class="container" style="margin-top: 50px;">
+    <div class="card text-center">
+        <h2>Вход в Портфолио</h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Введите данные для доступа</p>
+        <div class="input-group">
+            <input type="text" id="login-username" placeholder="Логин (admin, manager, user)" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <input type="password" id="login-password" placeholder="Пароль (1234)">
+        </div>
+        <p id="login-error" class="error-msg hidden"></p>
+        <button id="btn-login" class="btn-primary" style="width: 100%;">Войти</button>
+    </div>
+</div>
+
+<!-- ОСНОВНОЙ ЭКРАН ПРИЛОЖЕНИЯ -->
+<div id="screen-app" class="container hidden">
+    
+    <!-- Шапка профиля -->
     <div class="header">
-        <h1>Дарья Глазунова</h1>
-        <p>Android-разработчик • Чебоксары</p>
+        <h1 id="profile-name">Имя</h1>
+        <p id="profile-status">Статус</p>
     </div>
 
-    <div class="container">
+    <div class="profile-card">
+        <span class="role-badge" id="profile-role">Роль</span>
+        <div style="margin-top: 15px;">
+            <button id="btn-logout" class="btn-outline btn-sm">Выйти</button>
+            <button id="btn-toggle-theme" class="btn-secondary btn-sm">Тема</button>
+        </div>
+    </div>
+
+    <!-- Нижняя навигация -->
+    <div class="nav-bar">
+        <button class="nav-btn active" data-target="tab-feed" title="Лента">👥</button>
+        <button class="nav-btn" data-target="tab-notes" title="Заметки">📝</button>
+        <button class="nav-btn" data-target="tab-admin" id="nav-admin" title="Админ">📋</button>
+    </div>
+
+    <!-- Вкладка: Лента сообщества -->
+    <div id="tab-feed" class="tab-content">
         <div class="card">
-            <h2>Мои проекты</h2>
-
-            <div class="project">
-                <h3>Приложение Погоды</h3>
-                <div class="tech">Kotlin, Compose, Room, Retrofit</div>
-                <p>Показывает текущую погоду и прогноз на 7 дней.</p>
+            <h2>Лента сообщества</h2>
+            <div class="filter-row" id="category-filters">
+                <div class="filter-chip active" data-cat="Все">Все</div>
+                <div class="filter-chip" data-cat="Android">Android</div>
+                <div class="filter-chip" data-cat="Web">Web</div>
+                <div class="filter-chip" data-cat="Дизайн">Дизайн</div>
             </div>
-
-            <div class="project">
-                <h3>Список задач (ToDo)</h3>
-                <div class="tech">Kotlin, SQLite, Flow</div>
-                <p>Локальный список задач с сохранением в базу данных.</p>
-            </div>
-
-            <div class="project">
-                <h3>Это приложение Портфолио</h3>
-                <div class="tech">Compose, Navigation</div>
-                <p>Приложение, которое вы сейчас смотрите.</p>
-            </div>
-        </div>
-
-        <div class="card" style="text-align: center;">
-            <h2>Связаться со мной</h2>
-            <p>Открыта к предложениям о работе и стажировках.</p>
-            <a href="mailto:test@example.com" class="btn">Написать письмо</a>
+            <div id="feed-list"></div>
         </div>
     </div>
 
+    <!-- Вкладка: Заметки -->
+    <div id="tab-notes" class="tab-content hidden">
+        <div class="card">
+            <h2>Мои черновики</h2>
+            <div class="input-group">
+                <input type="text" id="note-title" placeholder="Заголовок">
+                <textarea id="note-body" rows="3" placeholder="Текст заметки..." class="mt-10"></textarea>
+            </div>
+            <button id="btn-save-note" class="btn-primary">Сохранить</button>
+            <div id="notes-list" class="mt-10"></div>
+        </div>
+    </div>
+
+    <!-- Вкладка: Админ (только для ADMIN) -->
+    <div id="tab-admin" class="tab-content hidden">
+        <div class="card">
+            <h2>Журнал аудита</h2>
+            <pre id="audit-log" style="background: var(--bg); padding: 10px; border-radius: 5px; font-size: 12px; max-height: 300px; overflow-y: auto;">Загрузка...</pre>
+            <button id="btn-refresh-audit" class="btn-secondary btn-sm mt-10">Обновить</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- ДАННЫЕ И СОСТОЯНИЕ ---
+    const users = {
+        'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь' },
+        'manager': { password: '1234', name: 'Мария Менеджерова', status: 'Старший модератор', role: 'Менеджер' },
+        'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор' }
+    };
+
+    const projects = [
+        { id: 1, title: "Приложение Погоды", tech: "Kotlin, Compose, Room", cat: "Android", desc: "Показывает текущую погоду и прогноз." },
+        { id: 2, title: "Список задач (ToDo)", tech: "Kotlin, SQLite, Flow", cat: "Android", desc: "Локальный список задач." },
+        { id: 3, title: "Мой сайт-портфолио", tech: "HTML, CSS, JS", cat: "Web", desc: "Сайт, который вы сейчас смотрите." },
+        { id: 4, title: "Дизайн интерфейса", tech: "Figma", cat: "Дизайн", desc: "Макет для мобильного приложения." }
+    ];
+
+    let currentUser = null;
+    let currentCategory = "Все";
+    let notes = [];
+    let auditLog = [];
+
+    // --- ЭЛЕМЕНТЫ DOM ---
+    const screenLogin = document.getElementById('screen-login');
+    const screenApp = document.getElementById('screen-app');
+    const loginError = document.getElementById('login-error');
+    const feedList = document.getElementById('feed-list');
+    const notesList = document.getElementById('notes-list');
+    const auditLogEl = document.getElementById('audit-log');
+
+    // --- ФУНКЦИИ ---
+    
+    // Логирование аудита
+    function logAudit(action, result = "ALLOWED", details = "") {
+        const time = new Date().toLocaleString();
+        auditLog.push(`[${time}] ${action} | ${result} | ${details}`);
+        if (auditLog.length > 50) auditLog.shift(); // Храним последние 50
+    }
+
+    // Вход
+    document.getElementById('btn-login').onclick = () => {
+        const user = document.getElementById('login-username').value.trim();
+        const pass = document.getElementById('login-password').value;
+        
+        if (users[user] && users[user].password === pass) {
+            currentUser = user;
+            loginError.classList.add('hidden');
+            screenLogin.classList.add('hidden');
+            screenApp.classList.remove('hidden');
+            logAudit("LOGIN", "ALLOWED", user);
+            updateProfile();
+            loadNotes();
+            loadAudit();
+            renderFeed();
+        } else {
+            loginError.textContent = "Неверный логин или пароль";
+            loginError.classList.remove('hidden');
+            logAudit("LOGIN", "DENIED", user);
+        }
+    };
+
+    // Выход
+    document.getElementById('btn-logout').onclick = () => {
+        logAudit("LOGOUT", "ALLOWED", currentUser);
+        currentUser = null;
+        screenApp.classList.add('hidden');
+        screenLogin.classList.remove('hidden');
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+    };
+
+    // Обновление профиля
+    function updateProfile() {
+        const user = users[currentUser];
+        document.getElementById('profile-name').textContent = user.name;
+        document.getElementById('profile-status').textContent = user.status;
+        document.getElementById('profile-role').textContent = user.role;
+
+        // Скрываем вкладку Админа, если роль не Админ
+        if (user.role !== 'Администратор') {
+            document.getElementById('nav-admin').classList.add('hidden');
+        } else {
+            document.getElementById('nav-admin').classList.remove('hidden');
+        }
+    }
+
+    // Переключение вкладок
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.target).classList.remove('hidden');
+        };
+    });
+
+    // Тема
+    document.getElementById('btn-toggle-theme').onclick = () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    };
+
+    // Лента проектов (с фильтрацией)
+    function renderFeed() {
+        feedList.innerHTML = '';
+        const filtered = projects.filter(p => currentCategory === "Все" || p.cat === currentCategory);
+        if (filtered.length === 0) {
+            feedList.innerHTML = '<p>Нет проектов в этой категории.</p>';
+        }
+        filtered.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'project-card';
+            div.innerHTML = `
+                <div class="project-category">${p.cat}</div>
+                <div class="project-title">${p.title}</div>
+                <div class="project-tech">${p.tech}</div>
+                <p>${p.desc}</p>
+            `;
+            feedList.appendChild(div);
+        });
+    }
+
+    // Фильтры категорий
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.onclick = () => {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentCategory = chip.dataset.cat;
+            renderFeed();
+        };
+    });
+
+    // Заметки (сохранение в localStorage)
+    function loadNotes() {
+        const stored = localStorage.getItem(`notes_${currentUser}`);
+        notes = stored ? JSON.parse(stored) : [];
+        renderNotes();
+    }
+
+    function renderNotes() {
+        notesList.innerHTML = '';
+        if (notes.length === 0) {
+            notesList.innerHTML = '<p style="color: var(--text-muted);">Заметок пока нет.</p>';
+            return;
+        }
+        notes.forEach((n, index) => {
+            const div = document.createElement('div');
+            div.className = 'note-item';
+            div.innerHTML = `
+                <div class="note-title">${n.title}</div>
+                <div>${n.body.substring(0, 40)}...</div>
+                <div class="note-date">${n.date}</div>
+                <button class="btn-danger btn-sm mt-10" onclick="deleteNote(${index})">Удалить</button>
+            `;
+            notesList.appendChild(div);
+        });
+    }
+
+    document.getElementById('btn-save-note').onclick = () => {
+        const title = document.getElementById('note-title').value.trim();
+        const body = document.getElementById('note-body').value.trim();
+        if (!title) return alert('Введите заголовок');
+        
+        notes.push({ title, body, date: new Date().toLocaleString() });
+        localStorage.setItem(`notes_${currentUser}`, JSON.stringify(notes));
+        document.getElementById('note-title').value = '';
+        document.getElementById('note-body').value = '';
+        renderNotes();
+        logAudit("CREATE_NOTE", "ALLOWED", title);
+    };
+
+    window.deleteNote = (index) => {
+        if (confirm('Удалить заметку?')) {
+            logAudit("DELETE_NOTE", "ALLOWED", notes[index].title);
+            notes.splice(index, 1);
+            localStorage.setItem(`notes_${currentUser}`, JSON.stringify(notes));
+            renderNotes();
+        }
+    };
+
+    // Аудит
+    function loadAudit() {
+        if (users[currentUser].role !== 'Администратор') return;
+        auditLogEl.textContent = auditLog.join('\n') || 'Журнал пуст.';
+    }
+
+    document.getElementById('btn-refresh-audit').onclick = loadAudit;
+
+    // Инициализация
+    logAudit("SYSTEM_START", "ALLOWED", "Приложение запущено");
+
+</script>
 </body>
 </html>
