@@ -15,6 +15,7 @@
             --border: #dee2e6;
             --danger: #dc3545;
             --warning: #ffc107;
+            --success: #28a745;
         }
 
         [data-theme="dark"] {
@@ -28,30 +29,69 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: var(--text); transition: background-color 0.3s, color 0.3s; line-height: 1.6; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            transition: background-color 0.3s, color 0.3s; 
+            line-height: 1.6; 
+        }
         .container { max-width: 800px; margin: 0 auto; padding: 24px; padding-bottom: 80px; }
         .hidden { display: none !important; }
 
+        /* Анимации (Фишка для ЛР 17) */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page-content { animation: fadeIn 0.4s ease-out; }
+
         /* Навигация */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
-        .nav-btn { background: none; border: none; font-size: 15px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: color 0.2s; padding: 8px 16px; }
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: var(--surface); border-top: 1px solid var(--border); 
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; 
+        }
+        .nav-btn { 
+            background: none; border: none; font-size: 15px; font-weight: 600; 
+            color: var(--text-muted); cursor: pointer; transition: color 0.2s; padding: 8px 16px; 
+        }
         .nav-btn:hover, .nav-btn.active { color: var(--primary); }
 
         /* Профиль */
-        .header-profile { background: var(--surface); border: 1px solid var(--border); padding: 32px 24px; text-align: center; border-radius: 12px; margin-bottom: 24px; position: relative; }
-        .avatar-circle { width: 80px; height: 80px; background: var(--primary); color: white; border-radius: 50%; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; }
+        .header-profile { 
+            background: var(--surface); border: 1px solid var(--border); 
+            padding: 32px 24px; text-align: center; border-radius: 12px; 
+            margin-bottom: 24px; position: relative; 
+        }
+        .avatar-circle { 
+            width: 80px; height: 80px; background: var(--primary); color: white; 
+            border-radius: 50%; margin: 0 auto 16px auto; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 28px; font-weight: bold; 
+        }
         .header-profile h1 { font-size: 24px; margin-bottom: 4px; }
         .header-profile p { color: var(--text-muted); font-size: 14px; }
-        .role-badge { display: inline-block; padding: 4px 12px; border-radius: 16px; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-size: 12px; font-weight: 600; margin-top: 16px; }
+        .role-badge { 
+            display: inline-block; padding: 4px 12px; border-radius: 16px; 
+            background: var(--bg); border: 1px solid var(--border); 
+            color: var(--text); font-size: 12px; font-weight: 600; margin-top: 16px; 
+        }
 
         /* Счётчики */
-        .stats-row { display: flex; justify-content: space-around; margin: 24px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .stats-row { 
+            display: flex; justify-content: space-around; margin: 24px 0; 
+            padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); 
+        }
         .stat-item { text-align: center; }
         .stat-value { font-weight: 700; font-size: 18px; }
         .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* Кнопки */
-        button { padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px; transition: background-color 0.2s; }
+        button { 
+            padding: 10px 16px; border: none; border-radius: 6px; 
+            cursor: pointer; font-weight: 500; font-size: 14px; transition: background-color 0.2s; 
+        }
         .btn-primary { background: var(--primary); color: white; width: 100%; }
         .btn-primary:hover { background: var(--primary-hover); }
         .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); width: 100%; }
@@ -64,10 +104,18 @@
         .card { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 16px; }
         .input-group { margin-bottom: 16px; }
         label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; }
-        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font-family: inherit; font-size: 15px; }
+        input[type="text"], input[type="password"], textarea { 
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border); 
+            border-radius: 6px; background: var(--bg); color: var(--text); 
+            font-family: inherit; font-size: 15px; 
+        }
 
-        /* Лента и проекты */
-        .project-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 16px; cursor: pointer; transition: border-color 0.2s; }
+        /* Лента */
+        .project-card { 
+            background: var(--surface); border: 1px solid var(--border); 
+            padding: 20px; border-radius: 12px; margin-bottom: 16px; 
+            cursor: pointer; transition: border-color 0.2s; 
+        }
         .project-card:hover { border-color: var(--primary); }
         .project-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .project-title { font-weight: 600; font-size: 18px; }
@@ -78,7 +126,10 @@
         
         /* Фильтры */
         .filter-row { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-        .filter-chip { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 14px; }
+        .filter-chip { 
+            padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); 
+            background: var(--surface); color: var(--text); cursor: pointer; font-size: 14px; 
+        }
         .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         /* Заметки */
@@ -97,6 +148,11 @@
         /* Вход и аудит */
         .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
         #audit-log { background: var(--bg); padding: 16px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; border: 1px solid var(--border); }
+
+        /* Руководство пользователя */
+        .help-section { margin-bottom: 24px; }
+        .help-section h3 { color: var(--primary); margin-bottom: 8px; }
+        .help-section p { margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -237,13 +293,38 @@
             <div id="notes-list"></div>
         </div>
 
-        <!-- НАСТРОЙКИ -->
+        <!-- НАСТРОЙКИ (С РУКОВОДСТВОМ) -->
         <div id="page-settings" class="page-content hidden">
             <h2 style="margin-bottom: 24px;">Настройки</h2>
-            <div class="card">
+            
+            <div class="card" style="margin-bottom: 24px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 16px;">Тёмная тема</span>
+                    <span style="font-size: 16px; font-weight: 500;">Тёмная тема</span>
                     <input type="checkbox" id="theme-toggle" style="width: 20px; height: 20px; cursor: pointer;">
+                </div>
+            </div>
+
+            <h2 style="margin-bottom: 16px;">Руководство пользователя</h2>
+            <div class="card">
+                <div class="help-section">
+                    <h3>1. Навигация</h3>
+                    <p>Используйте нижнюю панель для переключения между разделами: <b>Лента</b> (проекты других людей), <b>Заметки</b> (ваши черновики), <b>Профиль</b> (ваша страница) и <b>Настройки</b>.</p>
+                </div>
+                <div class="help-section">
+                    <h3>2. Лента сообщества</h3>
+                    <p>Здесь вы можете просматривать проекты других пользователей. Используйте фильтры сверху, чтобы отобрать проекты по категориям (Android, Web, Дизайн). Нажмите «Загрузить ещё», чтобы увидеть больше работ.</p>
+                </div>
+                <div class="help-section">
+                    <h3>3. Проекты и авторы</h3>
+                    <p>Нажмите на карточку проекта, чтобы прочитать подробное описание. Нажмите на имя автора, чтобы перейти в его профиль и подписаться на него.</p>
+                </div>
+                <div class="help-section">
+                    <h3>4. Ваш профиль</h3>
+                    <p>В профиле отображается ваше имя, статус, количество подписчиков и подписок. В разделе «Мои работы» находятся опубликованные вами проекты. Вы можете редактировать профиль по кнопке.</p>
+                </div>
+                <div class="help-section">
+                    <h3>5. Заметки (Черновики)</h3>
+                    <p>Создавайте заметки для будущих проектов. Их можно редактировать и удалять. Звездочка рядом с заметкой добавляет её в «Избранное» (включите галочку «Только избранное», чтобы отфильтровать).</p>
                 </div>
             </div>
         </div>
@@ -283,7 +364,6 @@
         'author3': { name: 'Елена Смирнова', status: 'Fullstack разработчик', followers: 450 }
     };
 
-    // Проекты
     const projectsData = [
         { id: 1, title: "Приложение Погоды", tech: "Kotlin, Compose, Room", cat: "Android", desc: "Показывает текущую погоду и прогноз на 7 дней.", authorKey: 'author1', owner: 'author1' },
         { id: 2, title: "Интерфейс банка", tech: "Figma", cat: "Дизайн", desc: "Дизайн мобильного банка.", authorKey: 'author2', owner: 'author2' },
@@ -298,7 +378,6 @@
         { id: 11, title: "Мобильная игра", tech: "Unity, C#", cat: "Дизайн", desc: "2D-платформер.", authorKey: 'author1', owner: 'author1' },
         { id: 12, title: "Сервис доставки", tech: "React Native", cat: "Android", desc: "Приложение для заказа еды.", authorKey: 'author3', owner: 'author3' },
         
-        // Проекты для профиля user
         { id: 13, title: "Мой первый Android App", tech: "Java, XML", cat: "Android", desc: "Учебный проект по основам Android. Включает работу с Activity, Intent и базами данных SQLite.", authorKey: 'user', owner: 'user' },
         { id: 14, title: "Портфолио v1.0", tech: "HTML, CSS", cat: "Web", desc: "Первая версия этого сайта. Сделан на чистом HTML и CSS без использования фреймворков.", authorKey: 'user', owner: 'user' },
         { id: 15, title: "Дизайн для друга", tech: "Figma", cat: "Дизайн", desc: "Сделал макет для проекта друга. Разработан дизайн главного экрана и экрана профиля.", authorKey: 'user', owner: 'user' }
@@ -314,7 +393,6 @@
     let currentAuthorKey = null;
     let subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '{}');
 
-    // --- DOM ---
     const screenLogin = document.getElementById('screen-login');
     const screenApp = document.getElementById('screen-app');
     const feedList = document.getElementById('feed-list');
@@ -323,7 +401,6 @@
     const subsList = document.getElementById('my-subscriptions-list');
     const myProjectsList = document.getElementById('my-projects-list');
 
-    // --- ЛОГИКА ---
     function logAudit(action, result = "ALLOWED", details = "") {
         const time = new Date().toLocaleString();
         auditLog.push(`[${time}] ${action} | ${result} | ${details}`);
@@ -388,7 +465,6 @@
         renderMyProjects();
     }
     
-    // ОТРИСОВКА МОИХ РАБОТ
     function renderMyProjects() {
         if (!myProjectsList) return;
 
@@ -403,7 +479,6 @@
         myProjects.forEach(p => {
             const div = document.createElement('div');
             div.className = 'project-card';
-            // ДОБАВЛЯЕМ ОБРАБОТЧИК КЛИКА
             div.onclick = () => openProjectDetail(p.id);
             
             div.innerHTML = `
@@ -449,7 +524,7 @@
         const toDisplay = filtered.slice(0, displayedProjectsCount);
 
         toDisplay.forEach(p => {
-            if (p.owner === currentUser) return; // Не показываем свои проекты в ленте
+            if (p.owner === currentUser) return;
 
             const div = document.createElement('div');
             div.className = 'project-card';
