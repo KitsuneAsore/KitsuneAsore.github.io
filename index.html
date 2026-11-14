@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио | Дарья Глазунова</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #6750A4, #D0BCFF);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 { margin: 0; font-size: 2.5em; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        .container {
+            max-width: 800px;
+            margin: -30px auto 30px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 { color: #6750A4; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .project {
+            border-left: 4px solid #6750A4;
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+        .project h3 { margin: 0 0 5px 0; }
+        .tech { color: #888; font-size: 0.9em; margin-bottom: 10px; }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6750A4;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s;
+        }
+        .btn:hover { background-color: #53408b; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Дарья Глазунова</h1>
+        <p>Android-разработчик • Чебоксары</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>Мои проекты</h2>
+
+            <div class="project">
+                <h3>Приложение Погоды</h3>
+                <div class="tech">Kotlin, Compose, Room, Retrofit</div>
+                <p>Показывает текущую погоду и прогноз на 7 дней.</p>
+            </div>
+
+            <div class="project">
+                <h3>Список задач (ToDo)</h3>
+                <div class="tech">Kotlin, SQLite, Flow</div>
+                <p>Локальный список задач с сохранением в базу данных.</p>
+            </div>
+
+            <div class="project">
+                <h3>Это приложение Портфолио</h3>
+                <div class="tech">Compose, Navigation</div>
+                <p>Приложение, которое вы сейчас смотрите.</p>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <h2>Связаться со мной</h2>
+            <p>Открыта к предложениям о работе и стажировках.</p>
+            <a href="mailto:test@example.com" class="btn">Написать письмо</a>
+        </div>
+    </div>
+
+</body>
+</html>
