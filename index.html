@@ -13,11 +13,9 @@
             --text: #333;
             --text-muted: #666;
             --danger: #B3261E;
-            --success: #2E7D32;
             --border: #ddd;
         }
 
-        /* Тёмная тема (ЛР 8) */
         [data-theme="dark"] {
             --primary: #D0BCFF;
             --primary-light: #6750A4;
@@ -30,14 +28,17 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; padding-bottom: 80px; /* Место для нижней панели */ }
         .hidden { display: none !important; }
+
+        /* Нижняя панель навигации */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); display: flex; justify-content: space-around; padding: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100; }
+        .nav-btn { background: none; border: none; font-size: 24px; cursor: pointer; opacity: 0.6; transition: transform 0.2s; padding: 5px 20px; }
+        .nav-btn:hover, .nav-btn.active { opacity: 1; transform: scale(1.2); }
 
         /* Шапка профиля */
         .header { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; }
         .header h1 { margin-bottom: 10px; }
-        .header p { opacity: 0.9; }
-        
         .profile-card { background: var(--surface); padding: 20px; border-radius: 15px; margin: -30px auto 20px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 600px; position: relative; z-index: 2; }
         .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; background: var(--primary-light); color: var(--text); font-size: 12px; font-weight: bold; margin-top: 10px; }
         
@@ -48,18 +49,13 @@
         .stat-label { font-size: 12px; color: var(--text-muted); }
 
         /* Кнопки */
-        button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: opacity 0.2s; margin-right: 5px; margin-bottom: 5px; }
+        button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: opacity 0.2s; margin-bottom: 10px; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-primary { background: var(--primary); color: white; width: 100%; }
-        .btn-secondary { background: var(--primary-light); color: var(--text); }
-        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-secondary { background: var(--primary-light); color: var(--text); width: 100%; }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); width: 100%; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-sm { font-size: 14px; padding: 6px 12px; }
-
-        /* Навигация */
-        .nav-bar { display: flex; justify-content: space-around; background: var(--surface); padding: 10px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .nav-btn { background: none; border: none; font-size: 24px; cursor: pointer; opacity: 0.6; transition: transform 0.2s; padding: 10px; }
-        .nav-btn:hover, .nav-btn.active { opacity: 1; transform: scale(1.2); }
+        .btn-sm { font-size: 14px; padding: 6px 12px; width: auto; }
 
         /* Карточки и инпуты */
         .card { background: var(--surface); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
@@ -70,78 +66,90 @@
         .project-card { border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 15px; }
         .project-title { font-weight: bold; font-size: 18px; }
         .project-tech { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
-        .project-category { font-size: 12px; font-weight: bold; color: var(--primary); }
         .filter-row { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
         .filter-chip { padding: 5px 15px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
         .filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* Заметки */
+        /* Заметки и Аудит */
         .note-item { border-bottom: 1px solid var(--border); padding: 10px 0; }
         .note-title { font-weight: bold; }
         .note-date { font-size: 12px; color: var(--text-muted); }
-
-        /* Аудит */
         #audit-log { background: var(--bg); padding: 10px; border-radius: 5px; font-size: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; }
+        
+        /* Экран входа */
+        .auth-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
     </style>
 </head>
 <body>
 
 <!-- ЭКРАН ВХОДА -->
-<div id="screen-login" class="container" style="margin-top: 50px;">
-    <div class="card text-center">
-        <h2>Вход в Портфолио</h2>
-        <p style="color: var(--text-muted); margin-bottom: 20px;">Введите логин и пароль</p>
+<div id="screen-login" class="auth-screen">
+    <div class="card" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center" style="margin-bottom: 20px;">Вход в Портфолио</h2>
         <div class="input-group">
             <input type="text" id="login-username" placeholder="Логин (admin или user)" autocomplete="off">
         </div>
         <div class="input-group">
             <input type="password" id="login-password" placeholder="Пароль (1234)">
         </div>
-        <p id="login-error" style="color: var(--danger); font-size: 14px; margin-bottom: 10px;" class="hidden"></p>
+        <p id="login-error" style="color: var(--danger); font-size: 14px; margin-bottom: 10px; text-align: center;" class="hidden"></p>
         <button id="btn-login" class="btn-primary">Войти</button>
     </div>
 </div>
 
-<!-- ОСНОВНОЙ ЭКРАН ПРИЛОЖЕНИЯ -->
-<div id="screen-app" class="container hidden">
+<!-- ГЛАВНЫЙ ЭКРАН ПРИЛОЖЕНИЯ (С НАВИГАЦИЕЙ) -->
+<div id="screen-app" class="hidden">
     
-    <!-- Шапка профиля (ЛР 3, 8) -->
-    <div class="header">
-        <div style="width: 64px; height: 64px; background: white; border-radius: 50%; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: var(--primary);" id="profile-avatar">ДГ</div>
-        <h1 id="profile-name">Имя</h1>
-        <p id="profile-status">Статус</p>
-    </div>
+    <div class="container">
 
-    <div class="profile-card">
-        <span class="role-badge" id="profile-role">Роль</span>
-        
-        <div class="stats-row">
-            <div class="stat-item">
-                <div class="stat-value" id="stat-followers">1240</div>
-                <div class="stat-label">Подписчики</div>
+        <!-- ЭКРАН 1: ПРОФИЛЬ -->
+        <div id="page-profile" class="page-content hidden">
+            <div class="header">
+                <div style="width: 64px; height: 64px; background: white; border-radius: 50%; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: var(--primary);" id="profile-avatar">ДГ</div>
+                <h1 id="profile-name">Имя</h1>
+                <p id="profile-status">Статус</p>
             </div>
-            <div class="stat-item">
-                <div class="stat-value">312</div>
-                <div class="stat-label">Подписки</div>
+
+            <div class="profile-card">
+                <span class="role-badge" id="profile-role">Роль</span>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-followers">1240</div>
+                        <div class="stat-label">Подписчики</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">312</div>
+                        <div class="stat-label">Подписки</div>
+                    </div>
+                </div>
+
+                <button id="btn-subscribe" class="btn-primary" style="margin-bottom: 8px;">Подписаться</button>
+                <button id="btn-edit-profile" class="btn-secondary" style="margin-bottom: 8px;">✎ Редактировать профиль</button>
+                <button id="btn-logout" class="btn-outline">Выйти из аккаунта</button>
             </div>
         </div>
 
-        <button id="btn-subscribe" class="btn-primary" style="margin-bottom: 10px;">Подписаться</button>
-        <button id="btn-logout" class="btn-outline" style="width: 100%;">Выйти из аккаунта</button>
-    </div>
+        <!-- ЭКРАН 2: РЕДАКТИРОВАНИЕ ПРОФИЛЯ -->
+        <div id="page-edit-profile" class="page-content hidden">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">Редактирование</h2>
+                <div class="input-group">
+                    <label>Имя</label>
+                    <input type="text" id="edit-name" placeholder="Имя">
+                </div>
+                <div class="input-group">
+                    <label>Статус</label>
+                    <input type="text" id="edit-status" placeholder="Роль и город">
+                </div>
+                <button id="btn-save-profile" class="btn-primary">Сохранить</button>
+                <button id="btn-cancel-edit" class="btn-outline" style="margin-top: 10px;">Отмена</button>
+            </div>
+        </div>
 
-    <!-- Навигация (ЛР 6) -->
-    <div class="nav-bar">
-        <button class="nav-btn active" data-target="tab-feed" title="Лента">👥</button>
-        <button class="nav-btn" data-target="tab-notes" title="Заметки">📝</button>
-        <button class="nav-btn" data-target="tab-settings" title="Настройки">⚙</button>
-        <button class="nav-btn hidden" data-target="tab-admin" id="nav-admin" title="Админ">📋</button>
-    </div>
-
-    <!-- Вкладка: Лента сообщества (ЛР 5, 10) -->
-    <div id="tab-feed" class="tab-content">
-        <div class="card">
-            <h2>Лента сообщества</h2>
+        <!-- ЭКРАН 3: ЛЕНТА -->
+        <div id="page-feed" class="page-content">
+            <h2 style="margin-bottom: 20px;">Лента сообщества</h2>
             <div class="filter-row" id="category-filters">
                 <div class="filter-chip active" data-cat="Все">Все</div>
                 <div class="filter-chip" data-cat="Android">Android</div>
@@ -150,42 +158,53 @@
             </div>
             <div id="feed-list"></div>
         </div>
-    </div>
 
-    <!-- Вкладка: Заметки (ЛР 11) -->
-    <div id="tab-notes" class="tab-content hidden">
-        <div class="card">
-            <h2>Мои черновики</h2>
-            <div class="input-group">
-                <input type="text" id="note-title" placeholder="Заголовок идеи">
-                <textarea id="note-body" rows="3" placeholder="Описание проекта, ссылки..." style="margin-top: 10px;"></textarea>
+        <!-- ЭКРАН 4: ЗАМЕТКИ -->
+        <div id="page-notes" class="page-content hidden">
+            <h2 style="margin-bottom: 20px;">Мои черновики</h2>
+            <div class="card">
+                <div class="input-group">
+                    <input type="text" id="note-title" placeholder="Заголовок идеи">
+                    <textarea id="note-body" rows="3" placeholder="Описание проекта..." style="margin-top: 10px;"></textarea>
+                </div>
+                <button id="btn-save-note" class="btn-primary">Сохранить</button>
             </div>
-            <button id="btn-save-note" class="btn-primary">Сохранить</button>
-            <div id="notes-list" style="margin-top: 20px;"></div>
+            <div id="notes-list"></div>
         </div>
-    </div>
 
-    <!-- Вкладка: Настройки (ЛР 6, 8) -->
-    <div id="tab-settings" class="tab-content hidden">
-        <div class="card">
-            <h2>Настройки</h2>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-                <span>Тёмная тема</span>
-                <label class="switch">
-                    <input type="checkbox" id="theme-toggle">
-                    <span class="slider"></span>
-                </label>
+        <!-- ЭКРАН 5: НАСТРОЙКИ -->
+        <div id="page-settings" class="page-content hidden">
+            <h2 style="margin-bottom: 20px;">Настройки</h2>
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 18px;">Тёмная тема</span>
+                    <input type="checkbox" id="theme-toggle" style="width: 24px; height: 24px; cursor: pointer;">
+                </div>
+            </div>
+            <div class="card" style="text-align: center; color: var(--text-muted);">
+                <p>Приложение Портфолио</p>
+                <p>Версия 1.0</p>
             </div>
         </div>
+
+        <!-- ЭКРАН 6: АДМИН -->
+        <div id="page-admin" class="page-content hidden">
+            <h2 style="margin-bottom: 20px;">Журнал аудита</h2>
+            <div class="card">
+                <div id="audit-log">Загрузка...</div>
+                <button id="btn-refresh-audit" class="btn-secondary btn-sm" style="margin-top: 10px;">Обновить</button>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Вкладка: Админ (ЛР 14) -->
-    <div id="tab-admin" class="tab-content hidden">
-        <div class="card">
-            <h2>Журнал аудита</h2>
-            <div id="audit-log">Загрузка...</div>
-            <button id="btn-refresh-audit" class="btn-secondary btn-sm" style="margin-top: 10px;">Обновить</button>
-        </div>
+    <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
+    <div class="bottom-nav">
+        <button class="nav-btn" data-target="page-feed" title="Лента">👥</button>
+        <button class="nav-btn" data-target="page-notes" title="Заметки">📝</button>
+        <button class="nav-btn" data-target="page-profile" title="Профиль">👤</button>
+        <button class="nav-btn" data-target="page-settings" title="Настройки">⚙</button>
+        <button class="nav-btn hidden" data-target="page-admin" id="nav-admin" title="Админ">📋</button>
     </div>
 
 </div>
@@ -218,7 +237,8 @@
     const notesList = document.getElementById('notes-list');
     const auditLogEl = document.getElementById('audit-log');
 
-    // --- ФУНКЦИИ ---
+    // --- ЛОГИКА ---
+
     function logAudit(action, result = "ALLOWED", details = "") {
         const time = new Date().toLocaleString();
         auditLog.push(`[${time}] ${action} | ${result} | ${details}`);
@@ -236,10 +256,11 @@
             screenLogin.classList.add('hidden');
             screenApp.classList.remove('hidden');
             logAudit("LOGIN", "ALLOWED", user);
-            updateProfile();
+            updateProfileUI();
             loadNotes();
             loadAudit();
             renderFeed();
+            navigateTo('page-feed'); // При входе открываем ленту
         } else {
             loginError.textContent = "Неверный логин или пароль";
             loginError.classList.remove('hidden');
@@ -247,30 +268,32 @@
         }
     };
 
-    // Выход
-    document.getElementById('btn-logout').onclick = () => {
-        logAudit("LOGOUT", "ALLOWED", currentUser);
-        currentUser = null;
-        isSubscribed = false;
-        screenApp.classList.add('hidden');
-        screenLogin.classList.remove('hidden');
-        document.getElementById('login-username').value = '';
-        document.getElementById('login-password').value = '';
-    };
+    // Навигация
+    function navigateTo(pageId) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+        document.getElementById(pageId).classList.remove('hidden');
+        
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            if (b.dataset.target === pageId) b.classList.add('active');
+            else b.classList.remove('active');
+        });
+    }
 
-    // Профиль (ЛР 3, 8)
-    function updateProfile() {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.onclick = () => navigateTo(btn.dataset.target);
+    });
+
+    // Обновление UI профиля
+    function updateProfileUI() {
         const user = users[currentUser];
         document.getElementById('profile-name').textContent = user.name;
         document.getElementById('profile-status').textContent = user.status;
         document.getElementById('profile-role').textContent = user.role;
         document.getElementById('stat-followers').textContent = user.followers;
 
-        // Аватар (инициалы)
         const initials = user.name.split(' ').map(n => n[0]).join('').substring(0,2);
         document.getElementById('profile-avatar').textContent = initials;
 
-        // Скрываем админку для обычного пользователя
         if (user.role !== 'Администратор') {
             document.getElementById('nav-admin').classList.add('hidden');
         } else {
@@ -278,7 +301,7 @@
         }
     }
 
-    // Подписка (ЛР 4)
+    // Подписка
     document.getElementById('btn-subscribe').onclick = () => {
         const btn = document.getElementById('btn-subscribe');
         const followersEl = document.getElementById('stat-followers');
@@ -294,17 +317,35 @@
         }
     };
 
-    // Переключение вкладок (ЛР 6)
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            btn.classList.add('active');
-            document.getElementById(btn.dataset.target).classList.remove('hidden');
-        };
-    });
+    // Редактирование профиля
+    document.getElementById('btn-edit-profile').onclick = () => {
+        document.getElementById('edit-name').value = users[currentUser].name;
+        document.getElementById('edit-status').value = users[currentUser].status;
+        navigateTo('page-edit-profile');
+    };
 
-    // Тёмная тема (ЛР 8)
+    document.getElementById('btn-save-profile').onclick = () => {
+        users[currentUser].name = document.getElementById('edit-name').value;
+        users[currentUser].status = document.getElementById('edit-status').value;
+        updateProfileUI();
+        logAudit("EDIT_PROFILE", "ALLOWED", "Данные обновлены");
+        navigateTo('page-profile');
+    };
+
+    document.getElementById('btn-cancel-edit').onclick = () => navigateTo('page-profile');
+
+    // Выход
+    document.getElementById('btn-logout').onclick = () => {
+        logAudit("LOGOUT", "ALLOWED", currentUser);
+        currentUser = null;
+        isSubscribed = false;
+        screenApp.classList.add('hidden');
+        screenLogin.classList.remove('hidden');
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+    };
+
+    // Тёмная тема
     const themeToggle = document.getElementById('theme-toggle');
     themeToggle.onchange = () => {
         if (themeToggle.checked) {
@@ -314,7 +355,7 @@
         }
     };
 
-    // Лента (ЛР 5, 10)
+    // Лента
     function renderFeed() {
         feedList.innerHTML = '';
         const filtered = projects.filter(p => currentCategory === "Все" || p.cat === currentCategory);
@@ -340,7 +381,7 @@
         };
     });
 
-    // Заметки (ЛР 11)
+    // Заметки
     function loadNotes() {
         const stored = localStorage.getItem(`notes_${currentUser}`);
         notes = stored ? JSON.parse(stored) : [];
@@ -355,10 +396,10 @@
         }
         notes.forEach((n, index) => {
             const div = document.createElement('div');
-            div.className = 'note-item';
+            div.className = 'note-item card';
             div.innerHTML = `
                 <div class="note-title">${n.title}</div>
-                <div>${n.body.substring(0, 40)}...</div>
+                <div>${n.body}</div>
                 <div class="note-date">${n.date}</div>
                 <button class="btn-danger btn-sm" style="margin-top: 5px;" onclick="deleteNote(${index})">Удалить</button>
             `;
@@ -388,14 +429,13 @@
         }
     };
 
-    // Админ (ЛР 14)
+    // Админ
     function loadAudit() {
-        if (users[currentUser].role !== 'Администратор') return;
+        if (currentUser && users[currentUser].role !== 'Администратор') return;
         auditLogEl.textContent = auditLog.join('\n') || 'Журнал пуст.';
     }
     document.getElementById('btn-refresh-audit').onclick = loadAudit;
 
-    // Старт
     logAudit("SYSTEM_START", "ALLOWED", "Приложение запущено");
 
 </script>
