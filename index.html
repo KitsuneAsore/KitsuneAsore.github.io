@@ -149,6 +149,10 @@
             <div class="card" id="my-subscriptions-list">
                 <!-- Сюда будут добавляться подписки -->
             </div>
+            <h3 style="margin: 24px 0 12px;">Мои работы</h3>
+            <div class="card" id="my-projects-list">
+                <!-- Сюда будут выводиться ваши проекты -->
+            </div>
         </div>
 
         <!-- ДЕТАЛИ ПРОЕКТА -->
@@ -267,9 +271,7 @@
 
 </div>
 
-<script>
     // --- ДАННЫЕ ---
-        // --- ДАННЫЕ ---
     const users = {
         'user': { password: '1234', name: 'Дарья Глазунова', status: 'Android-разработчик • Чебоксары', role: 'Пользователь', followers: 1240, following: 312 },
         'admin': { password: '1234', name: 'Александр Админов', status: 'Владелец платформы', role: 'Администратор', followers: 5400, following: 12 }
@@ -281,20 +283,25 @@
         'author3': { name: 'Елена Смирнова', status: 'Fullstack разработчик', followers: 450 }
     };
 
-    // Сделал больше проектов для теста
+    // Проекты. Добавлено поле owner для привязки к профилю
     const projectsData = [
-        { id: 1, title: "Приложение Погоды", tech: "Kotlin, Compose, Room", cat: "Android", desc: "Показывает текущую погоду и прогноз на 7 дней.", authorKey: 'author1' },
-        { id: 2, title: "Интерфейс банка", tech: "Figma", cat: "Дизайн", desc: "Дизайн мобильного банка.", authorKey: 'author2' },
-        { id: 3, title: "Список задач", tech: "Kotlin, SQLite", cat: "Android", desc: "Локальный таск-менеджер.", authorKey: 'author3' },
-        { id: 4, title: "Сайт-визитка", tech: "HTML, CSS, JS", cat: "Web", desc: "Портфолио для фотографа.", authorKey: 'author2' },
-        { id: 5, title: "Онлайн-магазин", tech: "React, Node.js", cat: "Web", desc: "E-commerce проект с корзиной.", authorKey: 'author3' },
-        { id: 6, title: "Трекер привычек", tech: "Compose, DataStore", cat: "Android", desc: "Трекер полезных привычек.", authorKey: 'author1' },
-        { id: 7, title: "Дизайн лендинга", tech: "Figma, Photoshop", cat: "Дизайн", desc: "Лендинг для IT-курсов.", authorKey: 'author2' },
-        { id: 8, title: "Новостной агрегатор", tech: "Kotlin, Retrofit", cat: "Android", desc: "Сбор новостей из разных источников.", authorKey: 'author1' },
-        { id: 9, title: "Мессенджер", tech: "Firebase, Kotlin", cat: "Android", desc: "Простой чат с авторизацией.", authorKey: 'author3' },
-        { id: 10, title: "Корпоративный сайт", tech: "Vue.js", cat: "Web", desc: "Сайт для крупной компании.", authorKey: 'author2' },
-        { id: 11, title: "Мобильная игра", tech: "Unity, C#", cat: "Дизайн", desc: "2D-платформер.", authorKey: 'author1' },
-        { id: 12, title: "Сервис доставки", tech: "React Native", cat: "Android", desc: "Приложение для заказа еды.", authorKey: 'author3' },
+        { id: 1, title: "Приложение Погоды", tech: "Kotlin, Compose, Room", cat: "Android", desc: "Показывает текущую погоду и прогноз на 7 дней.", authorKey: 'author1', owner: 'author1' },
+        { id: 2, title: "Интерфейс банка", tech: "Figma", cat: "Дизайн", desc: "Дизайн мобильного банка.", authorKey: 'author2', owner: 'author2' },
+        { id: 3, title: "Список задач", tech: "Kotlin, SQLite", cat: "Android", desc: "Локальный таск-менеджер.", authorKey: 'author3', owner: 'author3' },
+        { id: 4, title: "Сайт-визитка", tech: "HTML, CSS, JS", cat: "Web", desc: "Портфолио для фотографа.", authorKey: 'author2', owner: 'author2' },
+        { id: 5, title: "Онлайн-магазин", tech: "React, Node.js", cat: "Web", desc: "E-commerce проект с корзиной.", authorKey: 'author3', owner: 'author3' },
+        { id: 6, title: "Трекер привычек", tech: "Compose, DataStore", cat: "Android", desc: "Трекер полезных привычек.", authorKey: 'author1', owner: 'author1' },
+        { id: 7, title: "Дизайн лендинга", tech: "Figma, Photoshop", cat: "Дизайн", desc: "Лендинг для IT-курсов.", authorKey: 'author2', owner: 'author2' },
+        { id: 8, title: "Новостной агрегатор", tech: "Kotlin, Retrofit", cat: "Android", desc: "Сбор новостей из разных источников.", authorKey: 'author1', owner: 'author1' },
+        { id: 9, title: "Мессенджер", tech: "Firebase, Kotlin", cat: "Android", desc: "Простой чат с авторизацией.", authorKey: 'author3', owner: 'author3' },
+        { id: 10, title: "Корпоративный сайт", tech: "Vue.js", cat: "Web", desc: "Сайт для крупной компании.", authorKey: 'author2', owner: 'author2' },
+        { id: 11, title: "Мобильная игра", tech: "Unity, C#", cat: "Дизайн", desc: "2D-платформер.", authorKey: 'author1', owner: 'author1' },
+        { id: 12, title: "Сервис доставки", tech: "React Native", cat: "Android", desc: "Приложение для заказа еды.", authorKey: 'author3', owner: 'author3' },
+        
+        // Добавляем 3 проекта специально для вашего профиля (user)
+        { id: 13, title: "Мой первый Android App", tech: "Java, XML", cat: "Android", desc: "Учебный проект по основам Android.", authorKey: 'user', owner: 'user' },
+        { id: 14, title: "Портфолио v1.0", tech: "HTML, CSS", cat: "Web", desc: "Первая версия этого сайта.", authorKey: 'user', owner: 'user' },
+        { id: 15, title: "Дизайн для друга", tech: "Figma", cat: "Дизайн", desc: "Сделал макет для проекта друга.", authorKey: 'user', owner: 'user' }
     ];
 
     let currentUser = null;
@@ -376,6 +383,37 @@
         } else {
             document.getElementById('nav-admin').classList.remove('hidden');
         }
+        
+        // ОБНОВЛЯЕМ СПИСОК НАШИХ РАБОТ
+        renderMyProjects();
+    }
+    
+    // ФУНКЦИЯ ОТРИСОВКИ МОИХ РАБОТ
+    function renderMyProjects() {
+        const container = document.getElementById('my-projects-list');
+        if (!container) return; // Если элемента нет в HTML
+
+        // Берем проекты, где owner совпадает с текущим пользователем
+        const myProjects = projectsData.filter(p => p.owner === currentUser);
+
+        if (myProjects.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Вы пока не опубликовали ни одной работы.</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+        myProjects.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'project-card';
+            div.innerHTML = `
+                <div class="project-header">
+                    <div class="project-title">${p.title}</div>
+                    <div class="project-category">${p.cat}</div>
+                </div>
+                <div class="project-tech">${p.tech}</div>
+            `;
+            container.appendChild(div);
+        });
     }
 
     function renderSubscriptions() {
@@ -389,9 +427,8 @@
 
         mySubs.forEach(key => {
             const authorKey = key.split('_')[1];
-            const author = authors[authorKey];
-            if (!author) return;
-
+            const author = authors[authorKey] || { name: 'Неизвестный', status: '' };
+            
             const div = document.createElement('div');
             div.className = 'subscription-item';
             div.innerHTML = `
@@ -411,6 +448,9 @@
         const toDisplay = filtered.slice(0, displayedProjectsCount);
 
         toDisplay.forEach(p => {
+            // Показываем в ленте только проекты других авторов (не свои)
+            if (p.owner === currentUser) return; 
+
             const div = document.createElement('div');
             div.className = 'project-card';
             div.onclick = () => openProjectDetail(p.id);
@@ -420,25 +460,19 @@
                     <div class="project-category">${p.cat}</div>
                 </div>
                 <div class="project-author" onclick="event.stopPropagation(); openAuthorProfile('${p.authorKey}')">
-                    Автор: ${authors[p.authorKey].name}
+                    Автор: ${authors[p.authorKey] ? authors[p.authorKey].name : 'Я'}
                 </div>
                 <div class="project-tech">${p.tech}</div>
             `;
             feedList.appendChild(div);
         });
 
-        // Логика скрытия/показа кнопки
-        if (displayedProjectsCount >= filtered.length) {
-            btnLoadMore.style.display = 'none';
-        } else {
-            btnLoadMore.style.display = 'block';
-        }
+        btnLoadMore.style.display = (displayedProjectsCount >= filtered.length) ? 'none' : 'block';
     }
 
     btnLoadMore.onclick = () => {
         displayedProjectsCount += 4;
         renderFeed();
-        // Прокрутка вниз к новым элементам
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     };
 
@@ -468,8 +502,18 @@
     document.getElementById('btn-back-from-project').onclick = () => navigateTo('page-feed');
 
     window.openAuthorProfile = (authorKey) => {
+        if (authorKey === 'user' || authorKey === currentUser) {
+            navigateTo('page-profile');
+            return;
+        }
+        
         currentAuthorKey = authorKey;
         const author = authors[authorKey];
+        
+        if (!author) {
+            alert("Профиль не найден");
+            return;
+        }
         
         document.getElementById('author-name').textContent = author.name;
         document.getElementById('author-status').textContent = author.status;
